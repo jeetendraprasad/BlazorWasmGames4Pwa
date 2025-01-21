@@ -1,12 +1,12 @@
 self.assetsManifest = {
-  "version": "HqHormrp",
+  "version": "OAxM77m2",
   "assets": [
     {
       "hash": "sha256-3icpnSPhpFuRJYlVw4j2nMUlTdxbBf1lMDbDhytuztk=",
       "url": "BlazorWasmGames4Pwa.styles.css"
     },
     {
-      "hash": "sha256-ewq4x6HjTeIIOHZwYDv7AmXO/VdYGuIk9CmiN/uN5jY=",
+      "hash": "sha256-JYjgKYgduiRVrM0N/AdPwUtT5YZLWjpxjCzEQEjPJUU=",
       "url": "_framework/BlazorWasmGames4Pwa.wasm"
     },
     {
@@ -134,7 +134,7 @@ self.assetsManifest = {
       "url": "_framework/System.Text.RegularExpressions.wasm"
     },
     {
-      "hash": "sha256-PuMFSXn4cOm/70fMxBIQ0VI/aKJVEc0Gv2vjUx0wOtE=",
+      "hash": "sha256-VFAXF3PzhdmFCJWcEBdot+O4KcDujXWaJmlu7GOcMog=",
       "url": "_framework/blazor.boot.json"
     },
     {
