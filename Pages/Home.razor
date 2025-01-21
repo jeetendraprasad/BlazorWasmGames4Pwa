@@ -1,7 +1,13 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Home @version</PageTitle>
+
+<h1> Version @version</h1>
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+Welcome to your new app
+
+@code {
+    string version = "V1.1";
+}
