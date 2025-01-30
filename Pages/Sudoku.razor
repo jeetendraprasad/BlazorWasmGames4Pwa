@@ -1,0 +1,44 @@
+﻿@page "/sudoku"
+@using System.Text.Json
+
+<h3>Sudoku V2.1</h3>
+
+<div>
+    <h3>Enter Dimensions</h3>
+    <input type="number" name="rows_size" id="rows_size" placeholder="Rows" @bind-value:get="_sudokuUi.RowsBlock" @bind-value:set='(value) => this.OnChangeGridSize(value, "rows_size")' @bind-value:event="onchange" />
+    <input type="number" name="cols_size" id="cols_size" placeholder="Cols" @bind:get="_sudokuUi.ColsBlock" @bind:set='async (value) => await this.OnChangeGridSize(value, "cols_size")' @bind:event="oninput" />
+
+    <br />
+    <br />
+
+    <button class="btn btn-primary" style='visibility: @(_sudokuUi.GridUpdated ? "visible" : "hidden");' @onclick="OnChangeGrid">Reset Data &amp; Update Grid ?</button>
+
+    <br />
+    <br />
+
+</div>
+
+<div style="@_sudokuUi.GetSodukuStyle()">
+    @foreach (var item in _sudokuUi.Positions)
+    {
+        string cellInputId = item.Key + ":I";
+        <div style="@_sudokuUi.GetCellStyle(item.Key)" id="@item.Key">
+            <input type="number" style="overflow : hidden; width : 100%;" id="@cellInputId"
+            min="0" max="@(Math.Sqrt(_sudokuUi.Positions.Count))" step="1"
+            @bind-value:get="item.Value.CellValue" @bind-value:set='(value) => this.OnChangeCellInput(value, item.Key)' @bind-value:event="onchange" />
+            <br />
+            @for (int m = 0; m < item.Value.Hints.Count; m++)
+            {
+                string hintId = item.Value.Hints[m].HintId;
+                int hintNo = item.Value.Hints[m].HintNo;
+                bool hintEnabled = item.Value.Hints[m].HintEnabled;
+                Console.WriteLine($"Hint Enabled =  {hintEnabled}");
+                <button type="button" style="font-size: 0.5em;" disabled="@(!hintEnabled)" id="@hintId">@hintNo</button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+
+}
