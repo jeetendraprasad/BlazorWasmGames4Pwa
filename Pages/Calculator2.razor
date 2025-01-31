@@ -1,0 +1,40 @@
+﻿@page "/calculator2"
+
+@using BlazorWasmGames4Pwa.StateContainer
+
+@inject Calculator2State _calculator2State
+
+
+<h1>Calculator2 Demo</h1>
+
+<div class="container">
+
+    <div class="col-lg-12 nopadding">
+        <Calculator2Display></Calculator2Display>
+    </div>
+
+    <table class="table">
+        <thead hidden>
+            <tr>
+                @for (int i = 0; i < _calculator2State.Fixed.ButtonsInfo.GetLength(1); i++)
+                {
+                    <th width="@(100/_calculator2State.Fixed.ButtonsInfo.GetLength(1))%">Header1</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < _calculator2State.Fixed.ButtonsInfo.GetLength(0); i++)
+            {
+                <tr>
+                    @for (int j = 0; j < _calculator2State.Fixed.ButtonsInfo.GetLength(1); j++)
+                    {
+                        <td class="nopadding">
+                            <Calculator2Button Property="@(_calculator2State.Fixed.ButtonsInfo[i, j])"></Calculator2Button>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

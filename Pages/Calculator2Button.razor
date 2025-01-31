@@ -1,0 +1,33 @@
+﻿@using BlazorWasmGames4Pwa.StateContainer
+@using static BlazorWasmGames4Pwa.StateContainer.Calculator2StateFixed
+
+@inject Calculator2State _calculator2State
+
+<button class="@(GetDynamicClass(Property))" @onclick="@(async (args) => await ButtonEvent(args, @Property))">@Property.Text</button>
+
+
+@code {
+    string GetDynamicClass(ButtonInformation property)
+    {
+        string sClass = "app-button-fullfill btn btn-block" + " " + (property.Type == ButtonTypes.Digit ? "btn-primary" : " btn-success");
+        return sClass;
+    }
+
+    [Parameter]
+    public ButtonInformation Property { get; set; } = new();
+
+    async Task ButtonEvent(MouseEventArgs args, ButtonInformation param)
+    {
+        if (param.Type == ButtonTypes.Digit)
+        {
+            _calculator2State.Volatile.MathExpression += param.Text;
+        }
+        else if(param.Type == ButtonTypes.Equal)
+        {
+            _calculator2State.Volatile.MathExpression = GenericMethods.Eval(_calculator2State.Volatile.MathExpression);
+        }
+
+        await Task.Delay(1);
+    }
+
+}

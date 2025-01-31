@@ -1,0 +1,42 @@
+﻿@using BlazorWasmGames4Pwa.StateContainer
+
+@inject Calculator2State _calculator2State
+
+<div>
+    <input @bind="@_calculator2State.Volatile.MathExpression" type="text" readonly="readonly" style="width: @GetWidth1().ToString()%"></input><button style="width: @GetWidth2().ToString()%" @onclick="@(async () => await Reset())">AC</button>
+</div>
+
+@code {
+
+    async Task Reset()
+    {
+        _calculator2State.Volatile.MathExpression = "";
+
+        await Task.Delay(1);
+    }
+
+    double GetWidth1()
+    {
+        double width1 = 100 - GetWidth2();
+
+        return width1;
+    }
+
+    double GetWidth2()
+    {
+        double width1 = 100 / _calculator2State.Fixed.ButtonsInfo.GetLength(1);
+
+        return width1;
+    }
+
+    protected override void OnInitialized()
+    {
+        _calculator2State.Volatile.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _calculator2State.Volatile.OnChange -= StateHasChanged;
+    }
+
+}
