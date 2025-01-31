@@ -160,3 +160,20 @@ main[b-akg81p5yea] {
         overflow-y: auto;
     }
 }
+/* /Pages/Calculator2.razor.rz.scp.css */
+/*.body {
+    background: #FFA726;
+}*/
+
+.container[b-iv1vzdyvoq] {
+    padding: 30px;
+    border: 1px solid grey;
+    margin-top: 50px;
+    background: whitesmoke;
+    box-shadow: 5px 5px #525252;
+    border-radius: 10px;
+}
+
+.nopadding[b-iv1vzdyvoq] {
+    padding: 0px;
+}
