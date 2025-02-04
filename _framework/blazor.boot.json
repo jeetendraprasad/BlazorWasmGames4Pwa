@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "BlazorWasmGames4Pwa",
   "resources": {
-    "hash": "sha256-wjYFaQW5b0yH4h92VORR419pZECr0kZ7oZcgUsGfmcw=",
+    "hash": "sha256-LMNMYsrpJuvXik4ZTJOnhOSk3B1neTW9HZSzlW42vlk=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-B6DNRvFeCUi3jbx9uKpuj+hV9cN0KG4RdZj1FgBZwj8="
     },
@@ -18,7 +18,7 @@
     },
     "coreAssembly": {},
     "assembly": {
-      "BlazorWasmGames4Pwa.wasm": "sha256-H7nYqrKCIjVJ1UgbLGX7hxC+ItPC/HjOzIkzy/OO2Wk=",
+      "BlazorWasmGames4Pwa.wasm": "sha256-ev5dWUtxdZoydgkCWZ4Wg20TtEkUHjp9nN83kNYlbag=",
       "Microsoft.AspNetCore.Components.wasm": "sha256-eMicqkxmHnRhYc0spaMF/p+QjF3uEcU/Mudq2ntEO5M=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-vbmhR3SSHxQ7d2rRoVmpYplGgf5f0NGZK4xeg+ufpME=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-QQOcBDu5Rl/lLCWkwHn7BGdAtS9Eg1Qbafc/mUV3kKU=",
