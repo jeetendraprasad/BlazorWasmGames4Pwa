@@ -22,8 +22,11 @@
     @foreach (var item in _sudokuUi.Positions)
     {
         string cellInputId = item.Key + ":I";
+        bool cellValueClashing = item.Value.CellValueClashing;
+        //Console.WriteLine($"For cell {item.Key} CellValueClashing = {cellValueClashing}");
         <div style="@_sudokuUi.GetCellStyle(item.Key)" id="@item.Key">
-            <input type="number" style="overflow : hidden; width : 100%;" id="@cellInputId"
+            @* cellInputId *@
+            <input type="number" style="@_sudokuUi.GetInputStyle(cellValueClashing)" id="@cellInputId"
             min="0" max="@(Math.Sqrt(_sudokuUi.Positions.Count))" step="1"
             @bind-value:get="item.Value.CellValue" @bind-value:set='(value) => this.OnChangeCellInput(value, item.Key)' @bind-value:event="onchange" />
             <br />
@@ -32,8 +35,7 @@
                 string hintId = item.Value.Hints[m].HintId;
                 int hintNo = item.Value.Hints[m].HintNo;
                 bool hintEnabled = item.Value.Hints[m].HintEnabled;
-                Console.WriteLine($"Hint Enabled =  {hintEnabled}");
-                <button type="button" style="font-size: 0.5em;" disabled="@(!hintEnabled)" id="@hintId">@hintNo</button>
+                <button type="button" style="@_sudokuUi.GetButtonStyle()" disabled="@(!hintEnabled)" id="@hintId">@hintNo</button>
             }
         </div>
     }

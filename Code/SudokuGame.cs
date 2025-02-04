@@ -45,7 +45,7 @@ namespace BlazorWasmGames4Pwa.Code
             //            _moves.Add(new(cellInputId, value));
             _positions[cellInputId].CellValue = value;
 
-            Console.WriteLine(JsonSerializer.Serialize(_positions));
+            //Console.WriteLine(JsonSerializer.Serialize(_positions));
         }
 
         void Init()
@@ -200,7 +200,8 @@ namespace BlazorWasmGames4Pwa.Code
             return _colsBlock.ValAsInt;
         }
 
-        void ResetHints()
+        // resets all cells hints and all cell value clashings
+        void ResetHintsAndCellValueClashing()
         {
             for (int i = 0; i < Math.Sqrt(_positions.Count); i++)
             {
@@ -209,13 +210,14 @@ namespace BlazorWasmGames4Pwa.Code
                 foreach (SudokuCellInfo cellInfo in su)
                 {
                     cellInfo.ResetHints();
+                    cellInfo.CellValueClashing = false;
                 }
             }
         }
 
         public void RenewHints()
         {
-            ResetHints();
+            ResetHintsAndCellValueClashing();
             CheckHori();
             CheckVert();
             CheckBlock();
@@ -259,7 +261,7 @@ namespace BlazorWasmGames4Pwa.Code
 
         private void CheckInternal(List<string> su)
         {
-            Console.WriteLine($"Solving for unit \r\n {JsonSerializer.Serialize(su ?? [])}");
+            //Console.WriteLine($"Solving for unit \r\n {JsonSerializer.Serialize(su ?? [])}");
 
             if(su is not null)
                 for (int j = 0; j < su.Count; j++)
@@ -268,6 +270,7 @@ namespace BlazorWasmGames4Pwa.Code
                     List<string> others = su.Where(x => x != su[j]).ToList(); // to do add value check
 
                     if (_positions[our].CellValue == 0)
+                    {
                         foreach (string other in others)
                         {
                             if (_positions[other].CellValue > 0)
@@ -276,9 +279,21 @@ namespace BlazorWasmGames4Pwa.Code
                                 _positions[our].DisableHint(_positions[other].CellValue);
                             }
                         }
-                    else
+
+                        _positions[our].CellValueClashing = false;
+                    }
+                    else // _positions[our].CellValue > 0
                     {
-                        Console.WriteLine($"For position {our} removing all hints");
+                        foreach (string other in others)
+                        {
+                            if (_positions[other].CellValue > 0 && _positions[our].CellValue == _positions[other].CellValue)
+                            {
+                                Console.WriteLine($"Our position {our} is clashing other position {other}");
+                                _positions[our].CellValueClashing = true;
+                            }
+                        }
+
+                        //Console.WriteLine($"For position {our} removing all hints");
                         _positions[our].ResetHints();
                     }
 
@@ -355,6 +370,10 @@ namespace BlazorWasmGames4Pwa.Code
         readonly Integer1 _cellValueField1;
         List<HintInfo> _hints = [];
 
+        public bool CellValueClashing { get; set; } = false;
+
+        //public void Set2CellValueClashing() => CellValueClashing = true;
+
         public SudokuCellInfo(string cellId,
             //SudokuPositionTypeEnum positionType,
             int maxCellValue, int cellValue)
@@ -400,7 +419,8 @@ namespace BlazorWasmGames4Pwa.Code
         {
             SudokuCellInfo cloned = new(this._cellId, this._cellValueField1.GetMaxValue(), this.CellValue)
             {
-                _hints = this.Hints.Select(x => (HintInfo)x.Clone()).ToList()
+                _hints = this.Hints.Select(x => (HintInfo)x.Clone()).ToList(),
+                CellValueClashing = this.CellValueClashing,
             };
 
             return cloned;

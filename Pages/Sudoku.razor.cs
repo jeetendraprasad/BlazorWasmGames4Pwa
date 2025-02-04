@@ -157,11 +157,11 @@ namespace BlazorWasmGames4Pwa.Pages
 
         public string GetSodukuStyle() => $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;";
 
-        public string GetCellStyle(string? cellId = null)
+        public string GetCellStyle(string cellId)
         {
             string style = $"width: {sodukuSizeInPx / Math.Sqrt(_positions.Count) }px;height: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;float:left;border: solid;"; // display:flex; flex-direction: column;font-size: 2em;
 
-            if (cellId != null)
+            //if (cellId != null)
             {
                 GetBlockRowAndBlockColFromCellId(cellId, out int x, out int y);
                 string color = GetBlockColor(x, y);
@@ -171,5 +171,13 @@ namespace BlazorWasmGames4Pwa.Pages
             return style;
         }
 
+        public string GetInputStyle(bool cellValueClashing)
+        {
+            string retVal = "overflow : hidden; width : 100%; " + (!cellValueClashing ? "" : "text-decoration: line-through;");
+
+            return retVal;
+        }
+
+        public string GetButtonStyle() => "height:10%; width:10%; font-size: 0.5em;"; // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;";
     }
 }
