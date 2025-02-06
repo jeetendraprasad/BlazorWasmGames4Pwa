@@ -372,7 +372,16 @@ namespace BlazorWasmGames4Pwa.Code
 
         public bool CellValueClashing { get; set; } = false;
 
-        //public void Set2CellValueClashing() => CellValueClashing = true;
+        ///// <summary>
+        ///// // solvable by means of single hint enabled
+        ///// </summary>
+        //public bool SolvableByLoneHint
+        //{
+        //    get
+        //    {
+        //        return _hints.FindAll(x => x.HintEnabled).Count == 1;
+        //    }
+        //}
 
         public SudokuCellInfo(string cellId,
             //SudokuPositionTypeEnum positionType,
@@ -391,7 +400,7 @@ namespace BlazorWasmGames4Pwa.Code
         public void DisableHint(int hintToDisable)
         {
             //_hints.RemoveAll( x => x.HintNo == hintToRemove );
-            _hints.ForEach( (item) => { if (item.HintNo == hintToDisable) item.DisableHint(); ; } );
+            _hints.ForEach( (item) => { if (item.HintNo == hintToDisable) item.DisableHint(); } );
         }
 
         public void ResetHints()

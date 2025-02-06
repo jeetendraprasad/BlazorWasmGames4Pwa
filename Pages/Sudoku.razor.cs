@@ -159,7 +159,7 @@ namespace BlazorWasmGames4Pwa.Pages
 
         public string GetCellStyle(string cellId)
         {
-            string style = $"width: {sodukuSizeInPx / Math.Sqrt(_positions.Count) }px;height: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;float:left;border: solid;"; // display:flex; flex-direction: column;font-size: 2em;
+            string style = $"width: {sodukuSizeInPx / Math.Sqrt(_positions.Count) }px;height: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;float:left;border: solid;padding: 0px;"; // display:flex; flex-direction: column;font-size: 2em;
 
             //if (cellId != null)
             {
@@ -171,13 +171,13 @@ namespace BlazorWasmGames4Pwa.Pages
             return style;
         }
 
-        public string GetInputStyle(bool cellValueClashing)
+        public static string GetInputStyle(bool cellValueClashing)
         {
-            string retVal = "overflow : hidden; width : 100%; " + (!cellValueClashing ? "" : "text-decoration: line-through;");
+            string retVal = "overflow : hidden; height:20%; width : 100%; " + (!cellValueClashing ? "" : "text-decoration: line-through; padding: 0px;"); //  font-size: 80%;
 
             return retVal;
         }
 
-        public string GetButtonStyle() => "height:10%; width:10%; font-size: 0.5em;"; // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;";
+        public static string GetButtonStyle() => "height:30%; width:30%; padding: 0px; font-size: 80%; "; // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;";
     }
 }
