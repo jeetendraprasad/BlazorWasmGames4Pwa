@@ -29,7 +29,7 @@ namespace BlazorWasmGames4Pwa.Pages
         {
             _render = false;
 
-            _sudokuGame.UpdatePosition(value, cellInputId);
+            _sudokuGame.NewMoveForInput(value, cellInputId);
 
             _sudokuGame.RenewHints();
 
@@ -90,6 +90,19 @@ namespace BlazorWasmGames4Pwa.Pages
 
 
 
+        private void OnClickUndoBtn()
+        {
+            _render = false;
+
+            _sudokuGame.MoveUndo();
+
+            _sudokuGame.RenewHints();
+
+            _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
+
+            _render = true;
+            //this.StateHasChanged();
+        }
     }
 
     internal class SudokuUi

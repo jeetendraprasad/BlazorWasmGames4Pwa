@@ -1,6 +1,7 @@
 ﻿using BlazorWasmGames4Pwa.Pages;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -17,7 +18,7 @@ namespace BlazorWasmGames4Pwa.Code
         readonly int _colsBlockStartVal = 2;
 
         Dictionary<string, SudokuCellInfo> _positions = [];
-        //List<KeyValuePair<string, int>> _moves = [];
+        readonly Stack<Move> _moves = [];
 
         Integer1 _rowsBlock, _colsBlock;
 
@@ -40,12 +41,41 @@ namespace BlazorWasmGames4Pwa.Code
             return newClonedDictionary;
         }
 
-        public void UpdatePosition(int value, string cellInputId)
+        public void NewMoveForInput(int value, string cellInputId)
         {
+            _moves.Push(new Move() { ControlId = cellInputId, MoveType = MoveType.InputChanged, InputNewValue = value, HintButtonNewValue = null, });
             //            _moves.Add(new(cellInputId, value));
-            _positions[cellInputId].CellValue = value;
+            //_positions[cellInputId].CellValue = value;
+
+            UpdatePositionsByMoves(true);
 
             //Console.WriteLine(JsonSerializer.Serialize(_positions));
+        }
+
+        void UpdatePositionsByMoves(bool doInit)
+        {
+            if(doInit)
+                Init();
+
+            foreach (Move move in _moves)
+            {
+                if(move.MoveType == MoveType.InputChanged)
+                {
+                    _positions[move.ControlId].CellValue = move.InputNewValue ?? 0;
+                }
+            }
+        }
+
+        public bool MoveUndo()
+        {
+            if(_moves.Count <= 0)
+                return false;
+
+            _moves.Pop();
+
+            UpdatePositionsByMoves(true);
+
+            return true;
         }
 
         void Init()
@@ -436,10 +466,18 @@ namespace BlazorWasmGames4Pwa.Code
         }
     }
 
-    //internal enum SudokuPositionTypeEnum
-    //{
-    //    None,
-    //    Manual,
-    //    Solve,
-    //}
+    internal class Move
+    {
+        public required string ControlId { get; set; }
+        public MoveType MoveType { get; set; }
+        public int? InputNewValue { get; set; }
+        public bool? HintButtonNewValue { get; set; }// true is enabled and false is disabled
+    }
+
+    internal enum MoveType
+    {
+        InputChanged,
+        HintButtonDisabled,
+    }
+
 }
