@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "BlazorWasmGames4Pwa",
   "resources": {
-    "hash": "sha256-CK4cVBSKqYBskAQYgUl3Ke9Hd9huCoMyyKFVNnkZIEs=",
+    "hash": "sha256-ZcJ07iSJW6/OkbYyctKDJU6t3h54FjN/93GqgHOBd+4=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-B6DNRvFeCUi3jbx9uKpuj+hV9cN0KG4RdZj1FgBZwj8="
     },
@@ -18,7 +18,7 @@
     },
     "coreAssembly": {},
     "assembly": {
-      "BlazorWasmGames4Pwa.wasm": "sha256-/0j4XaI05q/dII0ZEqk5yK3kxnsG3FO7dFljsZ8tJ8E=",
+      "BlazorWasmGames4Pwa.wasm": "sha256-kFYazohLRJwSl0+hICnHig+be7tksbGw4CnsuyMjqW0=",
       "Microsoft.AspNetCore.Components.wasm": "sha256-eMicqkxmHnRhYc0spaMF/p+QjF3uEcU/Mudq2ntEO5M=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-vbmhR3SSHxQ7d2rRoVmpYplGgf5f0NGZK4xeg+ufpME=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-QQOcBDu5Rl/lLCWkwHn7BGdAtS9Eg1Qbafc/mUV3kKU=",
@@ -54,7 +54,7 @@
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-tBRRttACauxXfZHHRaS3Va2ZgTaH6rVOw7OF5+gHGhg=",
       "System.Runtime.InteropServices.wasm": "sha256-mtKQB1q0+AFbevydrWxR4UHdB4mvYyW35JV/1EdGsUM=",
       "System.Runtime.Numerics.wasm": "sha256-KD4cK6uVkPQNgK0dh3yMN1w5N36xfMhVNLZRjjf7IdA=",
-      "System.Runtime.wasm": "sha256-zEWTlrNTqGUI5aAdq02MqdylryE32kH71EV+JHEKrg8=",
+      "System.Runtime.wasm": "sha256-pHzBHX6D5UZn8rY57vO2ypcKxEmuat5Zp0s8UWWYpx0=",
       "System.Text.Encodings.Web.wasm": "sha256-M/w18d2LHfIgWmR1zUe/4BqMJvBKeRoHx9jb2SGOgCo=",
       "System.Text.Json.wasm": "sha256-C6Cj+3fUqwRdLDtKdITEf2+GxdEg2BSfkDA/pQdiqtw=",
       "System.Text.RegularExpressions.wasm": "sha256-qSNlP6rmJ/Kr+CygGHYytUckhzcBVHfyUqEhCXRK/r8=",
