@@ -27,11 +27,13 @@ namespace BlazorWasmGames4Pwa.Pages
 
         async Task OnChangeCellInput(int value, string cellInputId)
         {
+            ////////////////////////// NOTE: I hhave to make this as 'OnClickHintBtn'
+
             _render = false;
 
             _sudokuGame.NewMoveForInput(value, cellInputId);
 
-            _sudokuGame.RenewHints();
+            _sudokuGame.RenewHints(true);
 
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
@@ -96,12 +98,26 @@ namespace BlazorWasmGames4Pwa.Pages
 
             _sudokuGame.MoveUndo();
 
-            _sudokuGame.RenewHints();
+            _sudokuGame.RenewHints(false);
 
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
             _render = true;
             //this.StateHasChanged();
+        }
+        private void OnClickHintBtn(string hintBtnId)
+        {
+            _render = false;
+
+            _sudokuGame.Init();
+
+            _sudokuGame.NewMoveForHint(hintBtnId);
+
+            _sudokuGame.RenewHints(false);
+
+            _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
+
+            _render = true;
         }
     }
 

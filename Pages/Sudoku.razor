@@ -35,7 +35,7 @@
                 string hintId = item.Value.Hints[m].HintId;
                 int hintNo = item.Value.Hints[m].HintNo;
                 bool hintEnabled = item.Value.Hints[m].HintEnabled;
-                <button type="button" style="@SudokuUi.GetButtonStyle()" disabled="@(!hintEnabled)" id="@hintId">@hintNo</button>
+                <button type="button" style="@SudokuUi.GetButtonStyle()" disabled="@(!hintEnabled)" id="@hintId" @onclick="(e => OnClickHintBtn(hintId))">@hintNo</button>
             }
         </div>
     }

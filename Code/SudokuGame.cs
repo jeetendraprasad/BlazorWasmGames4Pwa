@@ -24,6 +24,7 @@ namespace BlazorWasmGames4Pwa.Code
 
         const string _blockIdPrefix = "B[{0},{1}]";                // block names are B[{0-based rows},{0-based cols}]
         const string _cellIdPrefix = "{0}:C[{1},{2}]";             // cell names are BLOCK_ID:[{0-based rows},{0-based cols}]
+        const string _hintIdPrefix = "H";
 
         public SudokuGame()
         {
@@ -52,6 +53,13 @@ namespace BlazorWasmGames4Pwa.Code
             //Console.WriteLine(JsonSerializer.Serialize(_moves));
         }
 
+        public void NewMoveForHint(string hintBtnId)
+        {
+            _moves.Push(new Move() { ControlId = hintBtnId, MoveType = MoveType.HintButtonDisabled, InputNewValue = null, HintButtonNewValue = false, });
+
+            UpdatePositionsByMoves(false);
+        }
+
         void UpdatePositionsByMoves(bool doInit)
         {
             if(doInit)
@@ -64,6 +72,21 @@ namespace BlazorWasmGames4Pwa.Code
                 if (move.MoveType == MoveType.InputChanged)
                 {
                     _positions[move.ControlId].CellValue = move.InputNewValue ?? 0;
+                }
+                else if (move.MoveType == MoveType.HintButtonDisabled)
+                {
+                    string hintBtnId = move.ControlId;
+
+                    string cellId = hintBtnId.Split($":{_hintIdPrefix}")[0];
+                    int hintNumber = Convert.ToInt32(hintBtnId.Split($":{_hintIdPrefix}")[1], CultureInfo.InvariantCulture);
+
+                    // B[0,0]:C[0,0]:H1
+                    _positions[cellId].DisableHint(hintNumber);
+                }
+                else
+                {
+                    // we should not be here
+                    // us gali me na ja, jaha teri gf nahi
                 }
             }
         }
@@ -80,7 +103,7 @@ namespace BlazorWasmGames4Pwa.Code
             return true;
         }
 
-        void Init()
+        public void Init()
         {
             _rowsBlock = new(_rowsBlockStartVal, _rowsBlockMinVal, _rowsBlockMaxVal);
             _colsBlock = new(_colsBlockStartVal, _colsBlockMinVal, _colsBlockMaxVal);
@@ -88,7 +111,7 @@ namespace BlazorWasmGames4Pwa.Code
             _positions = GetSuHoriFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x,
                 new SudokuCellInfo(cellId: x,
                 //positionType: SudokuPositionTypeEnum.None,
-                maxCellValue: _rowsBlock.ValAsInt * _colsBlock.ValAsInt, 0)
+                maxCellValue: _rowsBlock.ValAsInt * _colsBlock.ValAsInt, 0, _hintIdPrefix)
             ))
                 .ToDictionary(t => t.Key, t => t.Value);
         }
@@ -217,7 +240,7 @@ namespace BlazorWasmGames4Pwa.Code
             _positions = GetSuHoriFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x,
                 new SudokuCellInfo(cellId: x,
                 //positionType: SudokuPositionTypeEnum.None,
-                maxCellValue: _rowsBlock.ValAsInt * _colsBlock.ValAsInt, 0)
+                maxCellValue: _rowsBlock.ValAsInt * _colsBlock.ValAsInt, 0, _hintIdPrefix)
             ))
                 .ToDictionary(t => t.Key, t => t.Value);
         }
@@ -233,7 +256,7 @@ namespace BlazorWasmGames4Pwa.Code
         }
 
         // resets all cells hints and all cell value clashings
-        void ResetHintsAndCellValueClashing()
+        void ResetHintsAndCellValueClashing(bool resetHints)
         {
             for (int i = 0; i < Math.Sqrt(_positions.Count); i++)
             {
@@ -241,15 +264,16 @@ namespace BlazorWasmGames4Pwa.Code
 
                 foreach (SudokuCellInfo cellInfo in su)
                 {
-                    cellInfo.ResetHints();
+                    if(resetHints)
+                        cellInfo.ResetHints();
                     cellInfo.CellValueClashing = false;
                 }
             }
         }
 
-        public void RenewHints()
+        public void RenewHints(bool resetHints)
         {
-            ResetHintsAndCellValueClashing();
+            ResetHintsAndCellValueClashing(resetHints);
             CheckHori();
             CheckVert();
             CheckBlock();
@@ -401,6 +425,7 @@ namespace BlazorWasmGames4Pwa.Code
         //SudokuPositionTypeEnum _positionType;
         readonly Integer1 _cellValueField1;
         List<HintInfo> _hints = [];
+        string _hintIdPrefix = "";
 
         public bool CellValueClashing { get; set; } = false;
 
@@ -417,7 +442,7 @@ namespace BlazorWasmGames4Pwa.Code
 
         public SudokuCellInfo(string cellId,
             //SudokuPositionTypeEnum positionType,
-            int maxCellValue, int cellValue)
+            int maxCellValue, int cellValue, string hintIdPrefix)
         {
             _cellId = cellId;
             //_positionType = positionType;
@@ -426,7 +451,9 @@ namespace BlazorWasmGames4Pwa.Code
                 ValAsInt = cellValue
             };
 
-            _hints = Enumerable.Range(1, maxCellValue).Select( x => new HintInfo(hintId: _cellId + $":H{x}", hintNo: x, hintEnabled: true) ).ToList();
+            _hintIdPrefix = hintIdPrefix;
+
+            _hints = Enumerable.Range(1, maxCellValue).Select( x => new HintInfo(hintId: _cellId + $":{hintIdPrefix}{x}", hintNo: x, hintEnabled: true) ).ToList();
         }
 
         public void DisableHint(int hintToDisable)
@@ -438,9 +465,9 @@ namespace BlazorWasmGames4Pwa.Code
         public void ResetHints()
         {
             if (CellValue > 0)
-                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":H{x}", hintNo: x, hintEnabled: false) ).ToList();
+                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: false) ).ToList();
             else
-                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":H{x}", hintNo: x, hintEnabled: true) ).ToList();
+                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: true) ).ToList();
         }
 
         public ReadOnlyCollection<HintInfo> Hints { get
@@ -458,7 +485,7 @@ namespace BlazorWasmGames4Pwa.Code
 
         public object Clone()
         {
-            SudokuCellInfo cloned = new(this._cellId, this._cellValueField1.GetMaxValue(), this.CellValue)
+            SudokuCellInfo cloned = new(this._cellId, this._cellValueField1.GetMaxValue(), this.CellValue, this._hintIdPrefix)
             {
                 _hints = this.Hints.Select(x => (HintInfo)x.Clone()).ToList(),
                 CellValueClashing = this.CellValueClashing,
@@ -470,7 +497,7 @@ namespace BlazorWasmGames4Pwa.Code
 
     internal class Move
     {
-        public required string ControlId { get; set; }
+        public required string ControlId { get; set; } // this is either for input control id or hint button id
         public MoveType MoveType { get; set; }
         public int? InputNewValue { get; set; }
         public bool? HintButtonNewValue { get; set; }// true is enabled and false is disabled
