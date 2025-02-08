@@ -49,7 +49,7 @@ namespace BlazorWasmGames4Pwa.Code
 
             UpdatePositionsByMoves(true);
 
-            //Console.WriteLine(JsonSerializer.Serialize(_positions));
+            //Console.WriteLine(JsonSerializer.Serialize(_moves));
         }
 
         void UpdatePositionsByMoves(bool doInit)
@@ -57,9 +57,11 @@ namespace BlazorWasmGames4Pwa.Code
             if(doInit)
                 Init();
 
-            foreach (Move move in _moves)
+            foreach (Move move in _moves.ToArray().Reverse())
             {
-                if(move.MoveType == MoveType.InputChanged)
+                Console.WriteLine("Move: " + JsonSerializer.Serialize(move));
+
+                if (move.MoveType == MoveType.InputChanged)
                 {
                     _positions[move.ControlId].CellValue = move.InputNewValue ?? 0;
                 }
@@ -305,7 +307,7 @@ namespace BlazorWasmGames4Pwa.Code
                         {
                             if (_positions[other].CellValue > 0)
                             {
-                                Console.WriteLine($"From position {our} removing hint {_positions[other].CellValue}");
+                                //Console.WriteLine($"From position {our} removing hint {_positions[other].CellValue}");
                                 _positions[our].DisableHint(_positions[other].CellValue);
                             }
                         }
@@ -318,7 +320,7 @@ namespace BlazorWasmGames4Pwa.Code
                         {
                             if (_positions[other].CellValue > 0 && _positions[our].CellValue == _positions[other].CellValue)
                             {
-                                Console.WriteLine($"Our position {our} is clashing other position {other}");
+                                //Console.WriteLine($"Our position {our} is clashing other position {other}");
                                 _positions[our].CellValueClashing = true;
                             }
                         }
