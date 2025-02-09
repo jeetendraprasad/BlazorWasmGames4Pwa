@@ -427,7 +427,7 @@ namespace BlazorWasmGames4Pwa.Code
         //SudokuPositionTypeEnum _positionType;
         readonly Integer1 _cellValueField1;
         List<HintInfo> _hints = [];
-        string _hintIdPrefix = "";
+        readonly string _hintIdPrefix = "";
 
         public bool CellValueClashing { get; set; } = false;
 

@@ -1,6 +1,9 @@
 ﻿using BlazorWasmGames4Pwa.Code;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using System.Text.Json;
+
+
 
 namespace BlazorWasmGames4Pwa.Pages
 {
@@ -95,11 +98,25 @@ namespace BlazorWasmGames4Pwa.Pages
 
 
 
-        private void OnClickUndoBtn()
+        private async Task OnClickUndoBtn()
         {
             _render = false;
 
-            _sudokuGame.MoveUndo();
+            if(!_sudokuGame.MoveUndo())
+            {
+                var result = await swal.FireAsync(new SweetAlertOptions
+                {
+                    Icon = "error",
+                    Title = "Oops...",
+                    Text = "Nothing to undo."
+                });
+
+                _render = true;
+
+                await Task.FromResult(0);
+
+                return;
+            }
 
             _sudokuGame.ResetAllPositions();
 
@@ -110,6 +127,8 @@ namespace BlazorWasmGames4Pwa.Pages
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
             _render = true;
+
+            await Task.FromResult(0);
         }
         private void OnClickHintBtn(string hintBtnId)
         {
