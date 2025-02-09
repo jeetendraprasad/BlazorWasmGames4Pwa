@@ -1,13 +1,153 @@
 self.assetsManifest = {
-  "version": "M63LB0jq",
+  "version": "Y4/ReJLZ",
   "assets": [
     {
       "hash": "sha256-Nn3hFNI1tewUMI08Q8wfyBSkIHJ5g4VW3Ewd8aRj0js=",
       "url": "BlazorWasmGames4Pwa.styles.css"
     },
     {
-      "hash": "sha256-ckyZF0l4zwnv2uuabRgrZ522lufuyYMkF6Fz/BiP6YU=",
+      "hash": "sha256-UFKXf+AYLmmEPxqYutqUpB2V6/2dyccElKDAFdz03J8=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/bootstrap4Theme.css"
+    },
+    {
+      "hash": "sha256-UQwyDCflOyAlFdhJU8wBqtKVZe5AmqqNbtQDBlAAlgM=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/bootstrap4Theme.js"
+    },
+    {
+      "hash": "sha256-UFKXf+AYLmmEPxqYutqUpB2V6/2dyccElKDAFdz03J8=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/bootstrap4Theme.min.css"
+    },
+    {
+      "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/bootstrap4Theme.min.js"
+    },
+    {
+      "hash": "sha256-/00JWTMDAdgZ+v+U8qWF89z0xlZEFNDDVQtXmKcMpmc=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/borderlessTheme.css"
+    },
+    {
+      "hash": "sha256-UQwyDCflOyAlFdhJU8wBqtKVZe5AmqqNbtQDBlAAlgM=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/borderlessTheme.js"
+    },
+    {
+      "hash": "sha256-/00JWTMDAdgZ+v+U8qWF89z0xlZEFNDDVQtXmKcMpmc=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/borderlessTheme.min.css"
+    },
+    {
+      "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/borderlessTheme.min.js"
+    },
+    {
+      "hash": "sha256-9wNT9fC4I7cWcEQd5oJjICW0r+DgVAOm5onirm8C45E=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/bulmaTheme.css"
+    },
+    {
+      "hash": "sha256-UQwyDCflOyAlFdhJU8wBqtKVZe5AmqqNbtQDBlAAlgM=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/bulmaTheme.js"
+    },
+    {
+      "hash": "sha256-9wNT9fC4I7cWcEQd5oJjICW0r+DgVAOm5onirm8C45E=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/bulmaTheme.min.css"
+    },
+    {
+      "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/bulmaTheme.min.js"
+    },
+    {
+      "hash": "sha256-Kd3IKidTvlQ/oDtENnJbNQjvheCT9AMF/Rwss65R7Yg=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/darkTheme.css"
+    },
+    {
+      "hash": "sha256-UQwyDCflOyAlFdhJU8wBqtKVZe5AmqqNbtQDBlAAlgM=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/darkTheme.js"
+    },
+    {
+      "hash": "sha256-Kd3IKidTvlQ/oDtENnJbNQjvheCT9AMF/Rwss65R7Yg=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/darkTheme.min.css"
+    },
+    {
+      "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/darkTheme.min.js"
+    },
+    {
+      "hash": "sha256-GKPmrMC3FRZBInxQ5seqSxknpjTjHBPTCOQ3AEjV5kQ=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/defaultTheme.css"
+    },
+    {
+      "hash": "sha256-UQwyDCflOyAlFdhJU8wBqtKVZe5AmqqNbtQDBlAAlgM=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/defaultTheme.js"
+    },
+    {
+      "hash": "sha256-GKPmrMC3FRZBInxQ5seqSxknpjTjHBPTCOQ3AEjV5kQ=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/defaultTheme.min.css"
+    },
+    {
+      "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/defaultTheme.min.js"
+    },
+    {
+      "hash": "sha256-tt0rzxvsgQRnn2uOqRGOz5CHdjYJYH4J0WLH4vaDEm0=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/materialUITheme.css"
+    },
+    {
+      "hash": "sha256-UQwyDCflOyAlFdhJU8wBqtKVZe5AmqqNbtQDBlAAlgM=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/materialUITheme.js"
+    },
+    {
+      "hash": "sha256-tt0rzxvsgQRnn2uOqRGOz5CHdjYJYH4J0WLH4vaDEm0=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/materialUITheme.min.css"
+    },
+    {
+      "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/materialUITheme.min.js"
+    },
+    {
+      "hash": "sha256-bLE50huLtFGCh3LJMSbI63GOoN9GskGqNWoKDqoMsVQ=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/minimalTheme.css"
+    },
+    {
+      "hash": "sha256-UQwyDCflOyAlFdhJU8wBqtKVZe5AmqqNbtQDBlAAlgM=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/minimalTheme.js"
+    },
+    {
+      "hash": "sha256-bLE50huLtFGCh3LJMSbI63GOoN9GskGqNWoKDqoMsVQ=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/minimalTheme.min.css"
+    },
+    {
+      "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/minimalTheme.min.js"
+    },
+    {
+      "hash": "sha256-+a7vftmW76aT+wsvZETEJj4/nBzL00leH6+qOTXO8bI=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.js"
+    },
+    {
+      "hash": "sha256-CWwYCgx/FWaY9IECFUmrxwrV296sDeAAtqK6ILW9dx4=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"
+    },
+    {
+      "hash": "sha256-riZE2qEYlToSPljpT99ro9ohf5Q7Deh8oJ4z7FglpUs=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/wordpressAdminTheme.css"
+    },
+    {
+      "hash": "sha256-UQwyDCflOyAlFdhJU8wBqtKVZe5AmqqNbtQDBlAAlgM=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/wordpressAdminTheme.js"
+    },
+    {
+      "hash": "sha256-riZE2qEYlToSPljpT99ro9ohf5Q7Deh8oJ4z7FglpUs=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/wordpressAdminTheme.min.css"
+    },
+    {
+      "hash": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "url": "_content/CurrieTechnologies.Razor.SweetAlert2/wordpressAdminTheme.min.js"
+    },
+    {
+      "hash": "sha256-FdoALEV0AKVlTfUybfqb0LIHG+CUqcFFfgMp+gWiiIg=",
       "url": "_framework/BlazorWasmGames4Pwa.wasm"
+    },
+    {
+      "hash": "sha256-n6ubE26hJennNg6Gc9pr3BUMAuIS7CU4C94k2cw++m8=",
+      "url": "_framework/CurrieTechnologies.Razor.SweetAlert2.wasm"
     },
     {
       "hash": "sha256-vbmhR3SSHxQ7d2rRoVmpYplGgf5f0NGZK4xeg+ufpME=",
@@ -18,7 +158,7 @@ self.assetsManifest = {
       "url": "_framework/Microsoft.AspNetCore.Components.WebAssembly.wasm"
     },
     {
-      "hash": "sha256-eMicqkxmHnRhYc0spaMF/p+QjF3uEcU/Mudq2ntEO5M=",
+      "hash": "sha256-+oRhhm5Z2kqqeUrhCsw8CiuClQagxd7LdBe8z4kQMYg=",
       "url": "_framework/Microsoft.AspNetCore.Components.wasm"
     },
     {
@@ -126,7 +266,7 @@ self.assetsManifest = {
       "url": "_framework/System.ObjectModel.wasm"
     },
     {
-      "hash": "sha256-y7dVnCH7FtGRQ7VxAd+Zr2QAANaUWEPhjUar+y3ikW4=",
+      "hash": "sha256-EyYA8hNwA1rQPeB3XoD/XynsofExgQRMeYAI0Lsb6XI=",
       "url": "_framework/System.Private.CoreLib.wasm"
     },
     {
@@ -150,7 +290,7 @@ self.assetsManifest = {
       "url": "_framework/System.Runtime.Numerics.wasm"
     },
     {
-      "hash": "sha256-Tvid6PBcyRv22WAjn+caxWE9dk9hiRkrcF/8Qorw8zs=",
+      "hash": "sha256-jtyRckW3cBjhfOXiDxHeFtL2zzaVsCf/DCcbPs9brwk=",
       "url": "_framework/System.Runtime.wasm"
     },
     {
@@ -158,7 +298,7 @@ self.assetsManifest = {
       "url": "_framework/System.Text.Encodings.Web.wasm"
     },
     {
-      "hash": "sha256-C6Cj+3fUqwRdLDtKdITEf2+GxdEg2BSfkDA/pQdiqtw=",
+      "hash": "sha256-wG6y3LqedFiQbtvJmmx4zjCnmJtwuZxenLKzLyhkkdI=",
       "url": "_framework/System.Text.Json.wasm"
     },
     {
@@ -174,7 +314,7 @@ self.assetsManifest = {
       "url": "_framework/System.wasm"
     },
     {
-      "hash": "sha256-Aw8f/sd5FrRNAVrgHGodqmPKwVU/0ehcK/FCEEsMIR4=",
+      "hash": "sha256-BvTbq3khx3NcaCKDUL4w827hAw1fp2cH8W83WktLVgM=",
       "url": "_framework/blazor.boot.json"
     },
     {
@@ -234,7 +374,7 @@ self.assetsManifest = {
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-WhGaSgP8FfL0dZVlY7Hauk/CY29ukoIAlUDl5DgVM5o=",
+      "hash": "sha256-g9VpTSv4xAktSdQJG2INbSDkDr2n5Fsz+dj1Al3BIpo=",
       "url": "index.html"
     },
     {
