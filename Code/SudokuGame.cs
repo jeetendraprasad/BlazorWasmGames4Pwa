@@ -18,7 +18,7 @@ namespace BlazorWasmGames4Pwa.Code
         readonly int _colsBlockStartVal = 2;
 
         Dictionary<string, SudokuCellInfo> _positions = [];
-        readonly Stack<Move> _moves = [];
+        Stack<Move> _moves = [];
 
         Integer1 _rowsBlock, _colsBlock;
 
@@ -48,7 +48,7 @@ namespace BlazorWasmGames4Pwa.Code
             //            _moves.Add(new(cellInputId, value));
             //_positions[cellInputId].CellValue = value;
 
-            UpdatePositionsByMoves(true);
+            //UpdatePositionsByMoves(true);
 
             //Console.WriteLine(JsonSerializer.Serialize(_moves));
         }
@@ -57,14 +57,11 @@ namespace BlazorWasmGames4Pwa.Code
         {
             _moves.Push(new Move() { ControlId = hintBtnId, MoveType = MoveType.HintButtonDisabled, InputNewValue = null, HintButtonNewValue = false, });
 
-            UpdatePositionsByMoves(false);
+            //UpdatePositionsByMoves();
         }
 
-        void UpdatePositionsByMoves(bool doInit)
+        public void UpdatePositionsByMoves()
         {
-            if(doInit)
-                Init();
-
             foreach (Move move in _moves.ToArray().Reverse())
             {
                 Console.WriteLine("Move: " + JsonSerializer.Serialize(move));
@@ -98,23 +95,21 @@ namespace BlazorWasmGames4Pwa.Code
 
             _moves.Pop();
 
-            UpdatePositionsByMoves(true);
+            //UpdatePositionsByMoves();
 
             return true;
         }
 
-        public void Init()
+        private void Init()
         {
             _rowsBlock = new(_rowsBlockStartVal, _rowsBlockMinVal, _rowsBlockMaxVal);
             _colsBlock = new(_colsBlockStartVal, _colsBlockMinVal, _colsBlockMaxVal);
 
-            _positions = GetSuHoriFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x,
-                new SudokuCellInfo(cellId: x,
-                //positionType: SudokuPositionTypeEnum.None,
-                maxCellValue: _rowsBlock.ValAsInt * _colsBlock.ValAsInt, 0, _hintIdPrefix)
-            ))
-                .ToDictionary(t => t.Key, t => t.Value);
+            ResetAllPositions();
+            ResetAllMoves();
         }
+
+        public void ResetAllMoves() => _moves = [];
 
         // Get Solving Unit - Horigontal list - Full
         List<List<string>> GetSuHoriFull()
@@ -237,6 +232,13 @@ namespace BlazorWasmGames4Pwa.Code
             _rowsBlock.ValAsInt = rowsBlock;
             _colsBlock.ValAsInt = colsBlock;
 
+            ResetAllPositions();
+            ResetAllMoves();
+        }
+
+        // rest positions to all cell valies 0 and all the hints enabled
+        public void ResetAllPositions()
+        {
             _positions = GetSuHoriFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x,
                 new SudokuCellInfo(cellId: x,
                 //positionType: SudokuPositionTypeEnum.None,

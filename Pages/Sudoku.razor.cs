@@ -27,18 +27,21 @@ namespace BlazorWasmGames4Pwa.Pages
 
         async Task OnChangeCellInput(int value, string cellInputId)
         {
-            ////////////////////////// NOTE: I hhave to make this as 'OnClickHintBtn'
+            ////////////////////////// OK
 
             _render = false;
 
             _sudokuGame.NewMoveForInput(value, cellInputId);
 
-            _sudokuGame.RenewHints(true);
+            _sudokuGame.ResetAllPositions();
+
+            _sudokuGame.UpdatePositionsByMoves();
+
+            _sudokuGame.RenewHints(false);
 
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
             _render = true;
-            //this.StateHasChanged();
 
             await Task.FromResult(0);
         }
@@ -98,20 +101,27 @@ namespace BlazorWasmGames4Pwa.Pages
 
             _sudokuGame.MoveUndo();
 
+            _sudokuGame.ResetAllPositions();
+
+            _sudokuGame.UpdatePositionsByMoves();
+
             _sudokuGame.RenewHints(false);
 
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
             _render = true;
-            //this.StateHasChanged();
         }
         private void OnClickHintBtn(string hintBtnId)
         {
+            ////////////////////////////////// OK
+
             _render = false;
 
-            _sudokuGame.Init();
-
             _sudokuGame.NewMoveForHint(hintBtnId);
+
+            _sudokuGame.ResetAllPositions();
+
+            _sudokuGame.UpdatePositionsByMoves();
 
             _sudokuGame.RenewHints(false);
 
@@ -133,7 +143,7 @@ namespace BlazorWasmGames4Pwa.Pages
 
         public void SetPositions(Dictionary<string, SudokuCellInfo> positions)
         {
-            if(_positions.Count != positions.Count)
+            if (_positions.Count != positions.Count)
                 this.GridUpdated = false;
 
             _positions = positions;
@@ -188,7 +198,7 @@ namespace BlazorWasmGames4Pwa.Pages
 
         public string GetCellStyle(string cellId)
         {
-            string style = $"width: {sodukuSizeInPx / Math.Sqrt(_positions.Count) }px;height: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;float:left;border: solid;padding: 0px;"; // display:flex; flex-direction: column;font-size: 2em;
+            string style = $"width: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;height: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;float:left;border: solid;padding: 0px;"; // display:flex; flex-direction: column;font-size: 2em;
 
             //if (cellId != null)
             {
