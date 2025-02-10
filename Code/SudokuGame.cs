@@ -422,16 +422,16 @@ namespace BlazorWasmGames4Pwa.Code
                     string our = su[j];
                     List<string> others = su.Where(x => x != su[j]).ToList(); // to do add value check
 
-                    IEnumerable<int> ourHints = _positions[our].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo);
+                    List<int> ourHints = _positions[our].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
 
-                    if (_positions[our].CellValue == 0)
+                    if (ourHints.Count == 2)
                     {
 
                         foreach (string other in others)
                         {
-                            IEnumerable<int> otherHints = _positions[other].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo);
+                            List<int> otherHints = _positions[other].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
 
-                            if(ourHints.SequenceEqual(otherHints)) // NOTE: We assume that sequence will also be same for ourHints and otherHints
+                            if(otherHints.Count == 2 && ourHints.SequenceEqual(otherHints)) // NOTE: We assume that sequence will also be same for ourHints and otherHints
                             {
                                 return new SudokuTip()
                                 {

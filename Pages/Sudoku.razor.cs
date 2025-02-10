@@ -233,7 +233,7 @@ namespace BlazorWasmGames4Pwa.Pages
 
         public string GetCellStyle(string cellId)
         {
-            string style = $"width: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;height: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;float:left;border: solid;padding: 0px; font-size: 50%;"; // display:flex; flex-direction: column;font-size: 2em;
+            string style = $"width: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;height: {sodukuSizeInPx / Math.Sqrt(_positions.Count)}px;float:left;border: solid;padding: 0px; font-size: 100%;"; // display:flex; flex-direction: column;font-size: 2em;
 
             //if (cellId != null)
             {
@@ -252,6 +252,6 @@ namespace BlazorWasmGames4Pwa.Pages
             return retVal;
         }
 
-        public static string GetButtonStyle() => "height:25%; width:25%; padding: 0px;  "; // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;"; // font-size: 80%;
+        public static string GetButtonStyle() => "height:20%; width:20%; padding: 0px;  "; // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;"; // font-size: 80%;
     }
 }
