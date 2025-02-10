@@ -90,7 +90,7 @@ namespace BlazorWasmGames4Pwa.Code
 
         public bool MoveUndo()
         {
-            if(_moves.Count <= 0)
+            if (_moves.Count <= 0)
                 return false;
 
             _moves.Pop();
@@ -266,7 +266,7 @@ namespace BlazorWasmGames4Pwa.Code
 
                 foreach (SudokuCellInfo cellInfo in su)
                 {
-                    if(resetHints)
+                    if (resetHints)
                         cellInfo.ResetHints();
                     cellInfo.CellValueClashing = false;
                 }
@@ -321,7 +321,7 @@ namespace BlazorWasmGames4Pwa.Code
         {
             //Console.WriteLine($"Solving for unit \r\n {JsonSerializer.Serialize(su ?? [])}");
 
-            if(su is not null)
+            if (su is not null)
                 for (int j = 0; j < su.Count; j++)
                 {
                     string our = su[j];
@@ -365,19 +365,98 @@ namespace BlazorWasmGames4Pwa.Code
             if (tip != null)
                 return tip;
 
+            tip = FindNextTip_HintDoubles();
+
+            if (tip != null)
+                return tip;
+
+            return null;
+        }
+
+        internal SudokuTip? FindNextTip_HintDoubles()
+        {
+            SudokuTip? tip = null;
+
+            Dictionary<string, SudokuCellInfo> _positions2_Hori = GetSuHoriFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
+            for (int i = 0; i < Math.Sqrt(_positions2_Hori.Count); i++)
+            {
+                List<string> su = _positions2_Hori.Skip(i * (int)Math.Sqrt(_positions2_Hori.Count)).Take((int)Math.Sqrt(_positions2_Hori.Count)).Select(x => x.Key).ToList();
+
+                tip = FindNextTip_HintDoubles(su);
+
+                if (tip != null)
+                    return tip;
+            }
+
+            Dictionary<string, SudokuCellInfo> _positions2_Vert = GetSuVertFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
+            for (int i = 0; i < Math.Sqrt(_positions2_Vert.Count); i++)
+            {
+                List<string> su = _positions2_Vert.Skip(i * (int)Math.Sqrt(_positions2_Vert.Count)).Take((int)Math.Sqrt(_positions2_Vert.Count)).Select(x => x.Key).ToList();
+
+                tip = FindNextTip_HintDoubles(su);
+
+                if (tip != null)
+                    return tip;
+            }
+
+            Dictionary<string, SudokuCellInfo> _positions2_Bloc = GetSuBlockFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
+            for (int i = 0; i < Math.Sqrt(_positions2_Bloc.Count); i++)
+            {
+                List<string> su = _positions2_Bloc.Skip(i * (int)Math.Sqrt(_positions2_Bloc.Count)).Take((int)Math.Sqrt(_positions2_Bloc.Count)).Select(x => x.Key).ToList();
+
+                tip = FindNextTip_HintDoubles(su);
+
+                if (tip != null)
+                    return tip;
+            }
+
+            return tip;
+        }
+
+        internal SudokuTip? FindNextTip_HintDoubles(List<string> su)
+        {
+            if (su is not null)
+            {
+                for (int j = 0; j < su.Count; j++)
+                {
+                    string our = su[j];
+                    List<string> others = su.Where(x => x != su[j]).ToList(); // to do add value check
+
+                    IEnumerable<int> ourHints = _positions[our].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo);
+
+                    if (_positions[our].CellValue == 0)
+                    {
+
+                        foreach (string other in others)
+                        {
+                            IEnumerable<int> otherHints = _positions[other].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo);
+
+                            if(ourHints.SequenceEqual(otherHints)) // NOTE: We assume that sequence will also be same for ourHints and otherHints
+                            {
+                                return new SudokuTip()
+                                {
+                                    SudokuTipType = SudokuTipType.HintDoubles,
+                                    SudokuTipCell = [our, other],
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+
             return null;
         }
 
         internal SudokuTip? FindNextTip_SolvableByLoneHint()
         {
-            foreach (var position in _positions)
+            foreach (KeyValuePair<string, SudokuCellInfo> position in _positions)
             {
                 bool singleHint = position.Value.Hints.Where(x => x.HintEnabled).Count() == 1;
                 if (singleHint)
                 {
                     return new SudokuTip()
                     {
-                        SudokuTipCell = new() { position.Key },
+                        SudokuTipCell = [position.Key],
                         SudokuTipType = SudokuTipType.SolvableByLoneHint
                     };
                 }
@@ -398,6 +477,7 @@ namespace BlazorWasmGames4Pwa.Code
     internal enum SudokuTipType
     {
         SolvableByLoneHint,                // solvable because there is only single hint
+        HintDoubles,                       // Doubles pair. E.g. 2,3 and 2,3 in two cells
 
     }
 
@@ -497,24 +577,26 @@ namespace BlazorWasmGames4Pwa.Code
 
             _hintIdPrefix = hintIdPrefix;
 
-            _hints = Enumerable.Range(1, maxCellValue).Select( x => new HintInfo(hintId: _cellId + $":{hintIdPrefix}{x}", hintNo: x, hintEnabled: true) ).ToList();
+            _hints = Enumerable.Range(1, maxCellValue).Select(x => new HintInfo(hintId: _cellId + $":{hintIdPrefix}{x}", hintNo: x, hintEnabled: true)).ToList();
         }
 
         public void DisableHint(int hintToDisable)
         {
             //_hints.RemoveAll( x => x.HintNo == hintToRemove );
-            _hints.ForEach( (item) => { if (item.HintNo == hintToDisable) item.DisableHint(); } );
+            _hints.ForEach((item) => { if (item.HintNo == hintToDisable) item.DisableHint(); });
         }
 
         public void ResetHints()
         {
             if (CellValue > 0)
-                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: false) ).ToList();
+                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: false)).ToList();
             else
-                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: true) ).ToList();
+                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: true)).ToList();
         }
 
-        public ReadOnlyCollection<HintInfo> Hints { get
+        public ReadOnlyCollection<HintInfo> Hints
+        {
+            get
             {
                 ReadOnlyCollection<HintInfo> hintReadOnly = _hints.AsReadOnly();
                 return hintReadOnly;

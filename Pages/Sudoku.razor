@@ -27,7 +27,7 @@
         bool cellValueClashing = item.Value.CellValueClashing;
         //Console.WriteLine($"For cell {item.Key} CellValueClashing = {cellValueClashing}");
         <div style="@_sudokuUi.GetCellStyle(item.Key)" id="@item.Key">
-            @* cellInputId *@
+            @cellInputId
             <input type="number" style="@SudokuUi.GetInputStyle(cellValueClashing)" id="@cellInputId"
             min="0" max="@(Math.Sqrt(_sudokuUi.Positions.Count))" step="1"
             @bind-value:get="item.Value.CellValue" @bind-value:set='(value) => this.OnChangeCellInput(value, item.Key)' @bind-value:event="onchange" />
