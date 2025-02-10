@@ -148,6 +148,22 @@ namespace BlazorWasmGames4Pwa.Pages
 
             _render = true;
         }
+
+        private async Task OnNextTipBtn()
+        {
+            SudokuTip? tip = _sudokuGame.FindNextTip();
+
+            string json = JsonSerializer.Serialize(tip ?? new object());
+
+            var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Icon = "success",
+                Title = "Tip",
+                Text = json,
+            });
+
+            await Task.FromResult(0);
+        }
     }
 
     internal class SudokuUi

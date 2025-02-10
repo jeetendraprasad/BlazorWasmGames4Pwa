@@ -357,6 +357,48 @@ namespace BlazorWasmGames4Pwa.Code
 
                 }
         }
+
+        internal SudokuTip? FindNextTip()
+        {
+            SudokuTip? tip = FindNextTip_SolvableByLoneHint();
+
+            if (tip != null)
+                return tip;
+
+            return null;
+        }
+
+        internal SudokuTip? FindNextTip_SolvableByLoneHint()
+        {
+            foreach (var position in _positions)
+            {
+                bool singleHint = position.Value.Hints.Where(x => x.HintEnabled).Count() == 1;
+                if (singleHint)
+                {
+                    return new SudokuTip()
+                    {
+                        SudokuTipCell = new() { position.Key },
+                        SudokuTipType = SudokuTipType.SolvableByLoneHint
+                    };
+                }
+            }
+
+            // return _hints.FindAll(x => x.HintEnabled).Count == 1;
+            return null;
+        }
+    }
+
+    internal class SudokuTip
+    {
+        public SudokuTipType SudokuTipType { get; set; }
+
+        public List<string> SudokuTipCell { get; set; } = [];
+    }
+
+    internal enum SudokuTipType
+    {
+        SolvableByLoneHint,                // solvable because there is only single hint
+
     }
 
 
