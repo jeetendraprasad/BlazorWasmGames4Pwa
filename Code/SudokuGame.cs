@@ -1,4 +1,6 @@
 ﻿using BlazorWasmGames4Pwa.Pages;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -322,10 +324,10 @@ namespace BlazorWasmGames4Pwa.Code
             //Console.WriteLine($"Solving for unit \r\n {JsonSerializer.Serialize(su ?? [])}");
 
             if (su is not null)
-                for (int j = 0; j < su.Count; j++)
+                for (int i = 0; i < su.Count; i++)
                 {
-                    string our = su[j];
-                    List<string> others = su.Where(x => x != su[j]).ToList(); // to do add value check
+                    string our = su[i];
+                    List<string> others = su.Where((x, index) => index > i && x != su[i]).ToList(); // to do add value check
 
                     if (_positions[our].CellValue == 0)
                     {
@@ -413,20 +415,60 @@ namespace BlazorWasmGames4Pwa.Code
             return tip;
         }
 
-        internal SudokuTip? FindNextTip_HintDoubles(List<string> su)
+
+        internal List<SudokuTip> FindNextTip_HintDoublesFirstOrAll(List<string> su, bool onlyFirst = true)
         {
+            List<SudokuTip> retVal = [];
+
             if (su is not null)
             {
-                for (int j = 0; j < su.Count; j++)
+                for (int i = 0; i < su.Count; i++)
                 {
-                    string our = su[j];
-                    List<string> others = su.Where(x => x != su[j]).ToList(); // to do add value check
+                    string our = su[i];
+                    List<string> others = su.Where((x, index) => index > i && x != su[i]).ToList(); // to do add value check
 
                     List<int> ourHints = _positions[our].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
 
                     if (ourHints.Count == 2)
                     {
+                        foreach (string other in others)
+                        {
+                            List<int> otherHints = _positions[other].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
 
+                            if (otherHints.Count == 2 && ourHints.SequenceEqual(otherHints)) // NOTE: We assume that sequence will also be same for ourHints and otherHints
+                            {
+                                SudokuTip tip = new()
+                                {
+                                    SudokuTipType = SudokuTipType.HintDoubles,
+                                    SudokuTipCell = [our, other],
+                                };
+
+                                retVal.Add(tip);
+
+                                if (onlyFirst)
+                                    return retVal;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return retVal;
+        }
+
+        internal SudokuTip? FindNextTip_HintDoubles(List<string> su)
+        {
+            if (su is not null)
+            {
+                for (int i = 0; i < su.Count; i++)
+                {
+                    string our = su[i];
+                    List<string> others = su.Where((x, index) => index > i && x != su[i]).ToList(); // to do add value check
+
+                    List<int> ourHints = _positions[our].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
+
+                    if (ourHints.Count == 2)
+                    {
                         foreach (string other in others)
                         {
                             List<int> otherHints = _positions[other].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
@@ -465,6 +507,32 @@ namespace BlazorWasmGames4Pwa.Code
             // return _hints.FindAll(x => x.HintEnabled).Count == 1;
             return null;
         }
+
+        internal List<SudokuTip> FindNextTip_SolvableByLoneHintFirstOrAll(bool onlyFirst = true)
+        {
+            List<SudokuTip> retVal = [];
+
+            foreach (KeyValuePair<string, SudokuCellInfo> position in _positions)
+            {
+                bool singleHint = position.Value.Hints.Where(x => x.HintEnabled).Count() == 1;
+                if (singleHint)
+                {
+                    SudokuTip tip = new SudokuTip()
+                    {
+                        SudokuTipCell = [position.Key],
+                        SudokuTipType = SudokuTipType.SolvableByLoneHint
+                    };
+
+                    retVal.Add(tip);
+
+                    if (onlyFirst)
+                        return retVal;
+                }
+            }
+
+            return retVal;
+        }
+
     }
 
     internal class SudokuTip
