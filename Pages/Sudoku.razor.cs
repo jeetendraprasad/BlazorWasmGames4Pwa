@@ -151,7 +151,7 @@ namespace BlazorWasmGames4Pwa.Pages
 
         private async Task OnNextTipBtn()
         {
-            SudokuTip? tip = _sudokuGame.FindNextTip();
+            List<SudokuTip> tip = _sudokuGame.FindNextTip();
 
             string json = JsonSerializer.Serialize(tip ?? new object());
 

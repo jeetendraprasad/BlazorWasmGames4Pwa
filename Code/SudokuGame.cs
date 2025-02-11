@@ -360,19 +360,19 @@ namespace BlazorWasmGames4Pwa.Code
                 }
         }
 
-        internal SudokuTip? FindNextTip()
+        internal List<SudokuTip> FindNextTip()
         {
             List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: true);
 
             if(tips.Count > 0)
-                return tips[0];
+                return [tips[0]];
 
             tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: true);
 
             if (tips.Count > 0)
-                return tips[0];
+                return [tips[0]];
 
-            return null;
+            return [];
         }
 
         internal List<SudokuTip> FindNextTip_HintDoublesFirstOrAll(bool onlyFirst = true)
