@@ -362,32 +362,35 @@ namespace BlazorWasmGames4Pwa.Code
 
         internal SudokuTip? FindNextTip()
         {
-            SudokuTip? tip = FindNextTip_SolvableByLoneHint();
+            List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: true);
 
-            if (tip != null)
-                return tip;
+            if(tips.Count > 0)
+                return tips[0];
 
-            tip = FindNextTip_HintDoubles();
+            tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: true);
 
-            if (tip != null)
-                return tip;
+            if (tips.Count > 0)
+                return tips[0];
 
             return null;
         }
 
-        internal SudokuTip? FindNextTip_HintDoubles()
+        internal List<SudokuTip> FindNextTip_HintDoublesFirstOrAll(bool onlyFirst = true)
         {
-            SudokuTip? tip = null;
+            List<SudokuTip> retVal = [];
 
             Dictionary<string, SudokuCellInfo> _positions2_Hori = GetSuHoriFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
             for (int i = 0; i < Math.Sqrt(_positions2_Hori.Count); i++)
             {
                 List<string> su = _positions2_Hori.Skip(i * (int)Math.Sqrt(_positions2_Hori.Count)).Take((int)Math.Sqrt(_positions2_Hori.Count)).Select(x => x.Key).ToList();
 
-                tip = FindNextTip_HintDoubles(su);
+                List<SudokuTip> retVal1 = FindNextTip_HintDoublesFirstOrAll(su, onlyFirst: true);
 
-                if (tip != null)
-                    return tip;
+                retVal.AddRange(retVal1);
+
+                if (onlyFirst && retVal.Count > 0)
+                    return [retVal[0]];
+                    
             }
 
             Dictionary<string, SudokuCellInfo> _positions2_Vert = GetSuVertFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
@@ -395,10 +398,12 @@ namespace BlazorWasmGames4Pwa.Code
             {
                 List<string> su = _positions2_Vert.Skip(i * (int)Math.Sqrt(_positions2_Vert.Count)).Take((int)Math.Sqrt(_positions2_Vert.Count)).Select(x => x.Key).ToList();
 
-                tip = FindNextTip_HintDoubles(su);
+                List<SudokuTip> retVal2 = FindNextTip_HintDoublesFirstOrAll(su, onlyFirst: true);
 
-                if (tip != null)
-                    return tip;
+                retVal.AddRange(retVal2);
+
+                if (onlyFirst && retVal.Count > 0)
+                    return [retVal[0]];
             }
 
             Dictionary<string, SudokuCellInfo> _positions2_Bloc = GetSuBlockFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
@@ -406,13 +411,15 @@ namespace BlazorWasmGames4Pwa.Code
             {
                 List<string> su = _positions2_Bloc.Skip(i * (int)Math.Sqrt(_positions2_Bloc.Count)).Take((int)Math.Sqrt(_positions2_Bloc.Count)).Select(x => x.Key).ToList();
 
-                tip = FindNextTip_HintDoubles(su);
+                List<SudokuTip> retVal3 = FindNextTip_HintDoublesFirstOrAll(su, onlyFirst: true);
 
-                if (tip != null)
-                    return tip;
+                retVal.AddRange(retVal3);
+
+                if (onlyFirst && retVal.Count > 0)
+                    return [retVal[0]];
             }
 
-            return tip;
+            return retVal;
         }
 
 
@@ -456,58 +463,6 @@ namespace BlazorWasmGames4Pwa.Code
             return retVal;
         }
 
-        internal SudokuTip? FindNextTip_HintDoubles(List<string> su)
-        {
-            if (su is not null)
-            {
-                for (int i = 0; i < su.Count; i++)
-                {
-                    string our = su[i];
-                    List<string> others = su.Where((x, index) => index > i && x != su[i]).ToList(); // to do add value check
-
-                    List<int> ourHints = _positions[our].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
-
-                    if (ourHints.Count == 2)
-                    {
-                        foreach (string other in others)
-                        {
-                            List<int> otherHints = _positions[other].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
-
-                            if(otherHints.Count == 2 && ourHints.SequenceEqual(otherHints)) // NOTE: We assume that sequence will also be same for ourHints and otherHints
-                            {
-                                return new SudokuTip()
-                                {
-                                    SudokuTipType = SudokuTipType.HintDoubles,
-                                    SudokuTipCell = [our, other],
-                                };
-                            }
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        internal SudokuTip? FindNextTip_SolvableByLoneHint()
-        {
-            foreach (KeyValuePair<string, SudokuCellInfo> position in _positions)
-            {
-                bool singleHint = position.Value.Hints.Where(x => x.HintEnabled).Count() == 1;
-                if (singleHint)
-                {
-                    return new SudokuTip()
-                    {
-                        SudokuTipCell = [position.Key],
-                        SudokuTipType = SudokuTipType.SolvableByLoneHint
-                    };
-                }
-            }
-
-            // return _hints.FindAll(x => x.HintEnabled).Count == 1;
-            return null;
-        }
-
         internal List<SudokuTip> FindNextTip_SolvableByLoneHintFirstOrAll(bool onlyFirst = true)
         {
             List<SudokuTip> retVal = [];
@@ -517,7 +472,7 @@ namespace BlazorWasmGames4Pwa.Code
                 bool singleHint = position.Value.Hints.Where(x => x.HintEnabled).Count() == 1;
                 if (singleHint)
                 {
-                    SudokuTip tip = new SudokuTip()
+                    SudokuTip tip = new()
                     {
                         SudokuTipCell = [position.Key],
                         SudokuTipType = SudokuTipType.SolvableByLoneHint
