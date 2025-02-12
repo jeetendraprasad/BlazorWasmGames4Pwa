@@ -2,6 +2,7 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using System.IO.Pipelines;
 using System.Text;
 using System.Text.Json;
@@ -185,6 +186,18 @@ namespace BlazorWasmGames4Pwa.Pages
                     Text = bitString,
                 });
             }
+
+            await Task.FromResult(0);
+        }
+        private async Task DownloadSudoku()
+        {
+            byte[] byteArray = Encoding.UTF8.GetBytes("YourStringHere");
+            var fileStream = new MemoryStream(byteArray);
+            var fileName = "log.bin";
+
+            using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
 
             await Task.FromResult(0);
         }

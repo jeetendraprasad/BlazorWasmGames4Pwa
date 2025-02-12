@@ -2,6 +2,7 @@
 @using System.Text.Json
 
 @inject SweetAlertService swal
+@inject IJSRuntime JS
 
 <h3>Sudoku V2.4</h3>
 
@@ -58,7 +59,7 @@
         <InputFile class="form-control form-control-sm" OnChange="HandleFileUpload" />
     </div>
 
-    <button type="button" class="btn btn-sm btn-primary" onclick="DownloadProducts">
+    <button type="button" class="btn btn-sm btn-primary" @onclick="DownloadSudoku">
         <i class="bi bi-download me-1"></i>
         Save Game
     </button>
