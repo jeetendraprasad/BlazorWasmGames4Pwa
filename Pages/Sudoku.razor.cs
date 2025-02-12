@@ -191,13 +191,15 @@ namespace BlazorWasmGames4Pwa.Pages
         }
         private async Task DownloadSudoku()
         {
-            byte[] byteArray = Encoding.UTF8.GetBytes("YourStringHere");
-            var fileStream = new MemoryStream(byteArray);
-            var fileName = "log.bin";
+            await JS.InvokeVoidAsync("downloadFile", "users.csv", "csvContent");
 
-            using var streamRef = new DotNetStreamReference(stream: fileStream);
+            //byte[] byteArray = Encoding.UTF8.GetBytes("YourStringHere");
+            //var fileStream = new MemoryStream(byteArray);
+            //var fileName = "log.bin";
 
-            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+            //using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+            //await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
 
             await Task.FromResult(0);
         }
