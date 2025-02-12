@@ -50,6 +50,21 @@
 <br />
 <button type="button" class="btn btn-warning" id="nextTipMoveBtn" @onclick="OnNextTipBtn">Next Tip</button>
 
+<br />
+<br />
+<div class="card mb-2">
+    <div class="card-body d-flex flex-row">
+        <span class="flex-fill fw-bolder text-end p-1"> Load Game </span>
+        <InputFile class="form-control form-control-sm" OnChange="HandleFileUpload" />
+    </div>
+
+    <button type="button" class="btn btn-sm btn-primary" onclick="DownloadProducts">
+        <i class="bi bi-download me-1"></i>
+        Save Game
+    </button>
+</div>
+
+
 @code {
 
 }

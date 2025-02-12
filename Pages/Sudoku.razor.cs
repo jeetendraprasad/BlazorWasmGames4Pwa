@@ -1,6 +1,9 @@
 ﻿using BlazorWasmGames4Pwa.Code;
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using System.IO.Pipelines;
+using System.Text;
 using System.Text.Json;
 
 
@@ -163,6 +166,32 @@ namespace BlazorWasmGames4Pwa.Pages
             });
 
             await Task.FromResult(0);
+        }
+        private async Task HandleFileUpload(InputFileChangeEventArgs e)
+        {
+            if(e.File is not null)
+            {
+                var file = e.File;
+                MemoryStream ms = new MemoryStream();
+                await file.OpenReadStream().CopyToAsync(ms);
+                byte[] bytes = ms.ToArray();
+                //string bitString = BitConverter.ToString(bytes);
+                string bitString = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+
+                SweetAlertResult result = await swal.FireAsync(new SweetAlertOptions
+                {
+                    Icon = "success",
+                    Title = "File content",
+                    Text = bitString,
+                });
+            }
+
+            await Task.FromResult(0);
+        }
+
+        private async Task DownloadProducts()
+        {
+
         }
     }
 
