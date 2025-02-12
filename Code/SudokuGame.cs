@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Text.Json;
+//using static BlazorWasmGames4Pwa.Pages.Weather;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlazorWasmGames4Pwa.Code
@@ -47,19 +48,23 @@ namespace BlazorWasmGames4Pwa.Code
         public void NewMoveForInput(int value, string cellInputId)
         {
             _moves.Push(new Move() { ControlId = cellInputId, MoveType = MoveType.InputChanged, InputNewValue = value, HintButtonNewValue = null, });
-            //            _moves.Add(new(cellInputId, value));
-            //_positions[cellInputId].CellValue = value;
 
-            //UpdatePositionsByMoves(true);
+            ResetAllPositions();
 
-            //Console.WriteLine(JsonSerializer.Serialize(_moves));
+            UpdatePositionsByMoves();
+
+            RenewHints(false);
         }
 
         public void NewMoveForHint(string hintBtnId)
         {
             _moves.Push(new Move() { ControlId = hintBtnId, MoveType = MoveType.HintButtonDisabled, InputNewValue = null, HintButtonNewValue = false, });
 
-            //UpdatePositionsByMoves();
+            ResetAllPositions();
+
+            UpdatePositionsByMoves();
+
+            RenewHints(false);
         }
 
         public void UpdatePositionsByMoves()
@@ -97,7 +102,11 @@ namespace BlazorWasmGames4Pwa.Code
 
             _moves.Pop();
 
-            //UpdatePositionsByMoves();
+            ResetAllPositions();
+
+            UpdatePositionsByMoves();
+
+            RenewHints(false);
 
             return true;
         }
@@ -327,7 +336,7 @@ namespace BlazorWasmGames4Pwa.Code
                 for (int i = 0; i < su.Count; i++)
                 {
                     string our = su[i];
-                    List<string> others = su.Where((x, index) => index > i && x != su[i]).ToList(); // to do add value check
+                    List<string> others = su.Where((x, index) => /*index > i &&*/ x != su[i]).ToList(); // to do add value check
 
                     if (_positions[our].CellValue == 0)
                     {
@@ -432,7 +441,7 @@ namespace BlazorWasmGames4Pwa.Code
                 for (int i = 0; i < su.Count; i++)
                 {
                     string our = su[i];
-                    List<string> others = su.Where((x, index) => index > i && x != su[i]).ToList(); // to do add value check
+                    List<string> others = su.Where((x, index) => /*index > i &&*/ x != su[i]).ToList(); // to do add value check
 
                     List<int> ourHints = _positions[our].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
 
@@ -488,6 +497,73 @@ namespace BlazorWasmGames4Pwa.Code
             return retVal;
         }
 
+        private SudokuSaveData GetSaveData()
+        {
+            return new SudokuSaveData()
+            {
+                RowsBlock = _rowsBlock.ValAsInt,
+                ColsBlock = _colsBlock.ValAsInt,
+                Moves = _moves.Clone(),
+            };
+        }
+
+        public string GetSaveDataAsJson()
+        {
+            SudokuSaveData data = GetSaveData();
+            string json = JsonSerializer.Serialize(data);
+            return json;
+        }
+
+        public bool LoadSaveDataAsJson(string json)
+        {
+            SudokuSaveData? data = JsonSerializer.Deserialize<SudokuSaveData>(json);
+
+            int oldRows = _rowsBlock.ValAsInt;
+            int oldCols = _colsBlock.ValAsInt;
+
+            bool retVal;
+            if (data is not null)
+            {
+                _rowsBlock.ValAsInt = data.RowsBlock;
+                _colsBlock.ValAsInt = data.ColsBlock;
+
+                if (_rowsBlock.ValAsInt != data.RowsBlock || _colsBlock.ValAsInt != data.ColsBlock)
+                {
+                    // the rows and cols are out of range
+
+                    _rowsBlock.ValAsInt = oldRows;                           // Resetting to old values
+                    _colsBlock.ValAsInt = oldCols;                           // Resetting to old values
+
+                    retVal = false;
+                }
+                else
+                {
+                    _moves = data.Moves.Clone();
+
+                    ResetAllPositions();
+
+                    UpdatePositionsByMoves();
+
+                    RenewHints(false);
+
+                    retVal = true;
+                }
+            }
+            else
+                retVal = false;
+
+            //ReInit(data.RowsBlock, data.ColsBlock);
+
+
+            return retVal;
+        }
+    }
+
+    internal class SudokuSaveData
+    {
+        public int RowsBlock { get; set; }
+        public int ColsBlock { get; set; }
+        public Stack<Move> Moves { get; set; } = [];
     }
 
     internal class SudokuTip

@@ -39,11 +39,11 @@ namespace BlazorWasmGames4Pwa.Pages
 
             _sudokuGame.NewMoveForInput(value, cellInputId);
 
-            _sudokuGame.ResetAllPositions();
+            //_sudokuGame.ResetAllPositions();
 
-            _sudokuGame.UpdatePositionsByMoves();
+            //_sudokuGame.UpdatePositionsByMoves();
 
-            _sudokuGame.RenewHints(false);
+            //_sudokuGame.RenewHints(false);
 
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
@@ -121,11 +121,11 @@ namespace BlazorWasmGames4Pwa.Pages
                 return;
             }
 
-            _sudokuGame.ResetAllPositions();
+            //_sudokuGame.ResetAllPositions();
 
-            _sudokuGame.UpdatePositionsByMoves();
+            //_sudokuGame.UpdatePositionsByMoves();
 
-            _sudokuGame.RenewHints(false);
+            //_sudokuGame.RenewHints(false);
 
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
@@ -141,11 +141,11 @@ namespace BlazorWasmGames4Pwa.Pages
 
             _sudokuGame.NewMoveForHint(hintBtnId);
 
-            _sudokuGame.ResetAllPositions();
+            //_sudokuGame.ResetAllPositions();
 
-            _sudokuGame.UpdatePositionsByMoves();
+            //_sudokuGame.UpdatePositionsByMoves();
 
-            _sudokuGame.RenewHints(false);
+            //_sudokuGame.RenewHints(false);
 
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
@@ -171,8 +171,8 @@ namespace BlazorWasmGames4Pwa.Pages
         {
             if(e.File is not null)
             {
-                var file = e.File;
-                MemoryStream ms = new MemoryStream();
+                IBrowserFile file = e.File;
+                MemoryStream ms = new();
                 await file.OpenReadStream().CopyToAsync(ms);
                 byte[] bytes = ms.ToArray();
                 //string bitString = BitConverter.ToString(bytes);
@@ -187,11 +187,6 @@ namespace BlazorWasmGames4Pwa.Pages
             }
 
             await Task.FromResult(0);
-        }
-
-        private async Task DownloadProducts()
-        {
-
         }
     }
 

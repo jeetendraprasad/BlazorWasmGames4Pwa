@@ -1,7 +1,14 @@
 ﻿namespace BlazorWasmGames4Pwa.Code
 {
-    internal class ExtensionMethods
+    internal static class ExtensionMethods
     {
+        public static Stack<T> Clone <T>(this Stack<T> original)
+        {
+            T[] arr = new T[original.Count];
+            original.CopyTo(arr, 0);
+            Array.Reverse(arr);
+            return new Stack<T>(arr);
+        }
     }
 
     internal static class ListExtension
