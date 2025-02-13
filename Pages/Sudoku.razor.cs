@@ -106,7 +106,7 @@ namespace BlazorWasmGames4Pwa.Pages
         {
             _render = false;
 
-            if(!_sudokuGame.MoveUndo())
+            if (!_sudokuGame.MoveUndo())
             {
                 SweetAlertResult result = await swal.FireAsync(new SweetAlertOptions
                 {
@@ -168,38 +168,64 @@ namespace BlazorWasmGames4Pwa.Pages
 
             await Task.FromResult(0);
         }
-        private async Task HandleFileUpload(InputFileChangeEventArgs e)
+        private async Task SudokuFileUpload(InputFileChangeEventArgs e)
         {
-            if(e.File is not null)
+            _render = false;
+
+            if (e.File is not null)
             {
                 IBrowserFile file = e.File;
-                MemoryStream ms = new();
+                using MemoryStream ms = new();
                 await file.OpenReadStream().CopyToAsync(ms);
                 byte[] bytes = ms.ToArray();
-                //string bitString = BitConverter.ToString(bytes);
-                string bitString = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+                string json = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+                bool success = _sudokuGame.LoadSaveDataAsJson(json);
 
+                if (!success)
+                {
+                    SweetAlertResult result = await swal.FireAsync(new SweetAlertOptions
+                    {
+                        Icon = "error",
+                        Title = "Error",
+                        Text = "Error loading json file. Is this valis json file?",
+                    });
+                }
+                else
+                {
+                    SweetAlertResult result = await swal.FireAsync(new SweetAlertOptions
+                    {
+                        Icon = "success",
+                        Title = "Success",
+                        Text = "Game imported successfully.",
+                    });
+                }
+            }
+            else
+            {
                 SweetAlertResult result = await swal.FireAsync(new SweetAlertOptions
                 {
-                    Icon = "success",
-                    Title = "File content",
-                    Text = bitString,
+                    Icon = "error",
+                    Title = "Error",
+                    Text = "Error loading json file. Is this valis json file?",
                 });
             }
 
+            _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
+
+            _render = true;
+
             await Task.FromResult(0);
         }
-        private async Task DownloadSudoku()
+        private async Task SudokuFileDownload()
         {
-            await JS.InvokeVoidAsync("downloadFile", "users.csv", "csvContent");
+            string json = _sudokuGame.GetSaveDataAsJson();
+            byte[] byteArray = Encoding.UTF8.GetBytes(json);
+            using MemoryStream fileStream = new MemoryStream(byteArray);
+            string fileName = "Sudoku.bwg4pwa";
 
-            //byte[] byteArray = Encoding.UTF8.GetBytes("YourStringHere");
-            //var fileStream = new MemoryStream(byteArray);
-            //var fileName = "log.bin";
+            using DotNetStreamReference streamRef = new DotNetStreamReference(stream: fileStream);
 
-            //using var streamRef = new DotNetStreamReference(stream: fileStream);
-
-            //await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
 
             await Task.FromResult(0);
         }

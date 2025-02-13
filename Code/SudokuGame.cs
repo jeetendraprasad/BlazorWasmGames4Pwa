@@ -499,11 +499,13 @@ namespace BlazorWasmGames4Pwa.Code
 
         private SudokuSaveData GetSaveData()
         {
+            List<Move> newMoves = _moves.ToList();
+            newMoves.Reverse();
             return new SudokuSaveData()
             {
                 RowsBlock = _rowsBlock.ValAsInt,
                 ColsBlock = _colsBlock.ValAsInt,
-                Moves = _moves.Clone(),
+                Moves = newMoves,
             };
         }
 
@@ -516,7 +518,11 @@ namespace BlazorWasmGames4Pwa.Code
 
         public bool LoadSaveDataAsJson(string json)
         {
-            SudokuSaveData? data = JsonSerializer.Deserialize<SudokuSaveData>(json);
+            //JsonSerializerOptions options = new()
+            //{
+            //    UnmappedMemberHandling = System.Text.Json.Serialization.JsonUnmappedMemberHandling.Skip,
+            //};
+            SudokuSaveData ? data = JsonSerializer.Deserialize<SudokuSaveData>(json);
 
             int oldRows = _rowsBlock.ValAsInt;
             int oldCols = _colsBlock.ValAsInt;
@@ -538,7 +544,7 @@ namespace BlazorWasmGames4Pwa.Code
                 }
                 else
                 {
-                    _moves = data.Moves.Clone();
+                    _moves = new Stack<Move>(data.Moves);
 
                     ResetAllPositions();
 
@@ -552,9 +558,6 @@ namespace BlazorWasmGames4Pwa.Code
             else
                 retVal = false;
 
-            //ReInit(data.RowsBlock, data.ColsBlock);
-
-
             return retVal;
         }
     }
@@ -563,7 +566,7 @@ namespace BlazorWasmGames4Pwa.Code
     {
         public int RowsBlock { get; set; }
         public int ColsBlock { get; set; }
-        public Stack<Move> Moves { get; set; } = [];
+        public List<Move> Moves { get; set; } = [];
     }
 
     internal class SudokuTip

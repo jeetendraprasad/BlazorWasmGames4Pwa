@@ -4,6 +4,22 @@
 @inject SweetAlertService swal
 @inject IJSRuntime JS
 
+<script type="text/javascript">
+
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+
 <h3>Sudoku V2.4</h3>
 
 <div>
@@ -30,9 +46,9 @@
         <div style="@_sudokuUi.GetCellStyle(item.Key)" id="@item.Key">
             @cellInputId
             <input type="number" style="@SudokuUi.GetInputStyle(cellValueClashing)" id="@cellInputId"
-            min="0" max="@(Math.Sqrt(_sudokuUi.Positions.Count))" step="1"
-            @bind-value:get="item.Value.CellValue" @bind-value:set='(value) => this.OnChangeCellInput(value, item.Key)' @bind-value:event="onchange" />
-@*             <br /> *@
+                   min="0" max="@(Math.Sqrt(_sudokuUi.Positions.Count))" step="1"
+                   @bind-value:get="item.Value.CellValue" @bind-value:set='(value) => this.OnChangeCellInput(value, item.Key)' @bind-value:event="onchange" />
+            @*             <br /> *@
             @for (int m = 0; m < item.Value.Hints.Count; m++)
             {
                 string hintId = item.Value.Hints[m].HintId;
@@ -56,10 +72,10 @@
 <div class="card mb-2">
     <div class="card-body d-flex flex-row">
         <span class="flex-fill fw-bolder text-end p-1"> Load Game </span>
-        <InputFile class="form-control form-control-sm" OnChange="HandleFileUpload" />
+        <InputFile class="form-control form-control-sm" OnChange="SudokuFileUpload" />
     </div>
 
-    <button type="button" class="btn btn-sm btn-primary" @onclick="DownloadSudoku">
+    <button type="button" class="btn btn-sm btn-primary" @onclick="SudokuFileDownload">
         <i class="bi bi-download me-1"></i>
         Save Game
     </button>
