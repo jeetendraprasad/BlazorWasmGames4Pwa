@@ -369,6 +369,14 @@ namespace BlazorWasmGames4Pwa.Code
                 }
         }
 
+        public void ResetAllHighlights()
+        {
+            foreach (KeyValuePair<string, SudokuCellInfo> item in _positions)
+            {
+                item.Value.ResetAllHighlights();
+            }
+        }
+
         internal List<SudokuTip> FindNextTip()
         {
             List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: true);
@@ -560,6 +568,19 @@ namespace BlazorWasmGames4Pwa.Code
 
             return retVal;
         }
+
+        internal void HighlightAllHintsByTips(List<SudokuTip> tips)
+        {
+            foreach(SudokuTip tip in tips)
+            {
+                if (tip.SudokuTipType == SudokuTipType.SolvableByLoneHint)
+                {
+                    SudokuCellInfo cellInfo = _positions[tip.SudokuTipCell[0]];
+
+                    cellInfo.EnableLoneHintHighlight();
+                }
+            }
+        }
     }
 
     internal class SudokuSaveData
@@ -629,20 +650,24 @@ namespace BlazorWasmGames4Pwa.Code
         }
     }
 
-    internal class HintInfo(string hintId, int hintNo, bool hintEnabled) : ICloneable
+    internal class HintInfo(string hintId, int hintNo, bool hintEnabled, bool highlighted) : ICloneable
     {
         public string HintId { get; private set; } = hintId;
         public int HintNo { get; private set; } = hintNo;
         public bool HintEnabled { get; private set; } = hintEnabled;
+        public bool Highlighted { get; private set; } = highlighted;
 
         public object Clone()
         {
-            HintInfo cloned = new(this.HintId, this.HintNo, this.HintEnabled);
+            HintInfo cloned = new(this.HintId, this.HintNo, this.HintEnabled, this.Highlighted);
 
             return cloned;
         }
 
         public void DisableHint() => HintEnabled = false;
+
+        public void DisableHighlight() => Highlighted = false;
+        public void EnableHighlight() => Highlighted = true;
     }
 
     internal class SudokuCellInfo : ICloneable
@@ -655,16 +680,19 @@ namespace BlazorWasmGames4Pwa.Code
 
         public bool CellValueClashing { get; set; } = false;
 
-        ///// <summary>
-        ///// // solvable by means of single hint enabled
-        ///// </summary>
-        //public bool SolvableByLoneHint
-        //{
-        //    get
-        //    {
-        //        return _hints.FindAll(x => x.HintEnabled).Count == 1;
-        //    }
-        //}
+        public void ResetAllHighlights()
+        {
+            _hints.ForEach(item => item.DisableHighlight());
+        }
+
+        public void EnableLoneHintHighlight()
+        {
+            List<HintInfo> hints = _hints.Where(x => x.HintEnabled).Select(y => y).ToList();
+
+            Debug.Assert(hints.Count == 1); // we should have only single hint enabled
+
+            hints.ForEach(x => x.EnableHighlight());
+        }
 
         public SudokuCellInfo(string cellId,
             //SudokuPositionTypeEnum positionType,
@@ -679,21 +707,20 @@ namespace BlazorWasmGames4Pwa.Code
 
             _hintIdPrefix = hintIdPrefix;
 
-            _hints = Enumerable.Range(1, maxCellValue).Select(x => new HintInfo(hintId: _cellId + $":{hintIdPrefix}{x}", hintNo: x, hintEnabled: true)).ToList();
+            _hints = Enumerable.Range(1, maxCellValue).Select(x => new HintInfo(hintId: _cellId + $":{hintIdPrefix}{x}", hintNo: x, hintEnabled: true, highlighted: false)).ToList();
         }
 
         public void DisableHint(int hintToDisable)
         {
-            //_hints.RemoveAll( x => x.HintNo == hintToRemove );
             _hints.ForEach((item) => { if (item.HintNo == hintToDisable) item.DisableHint(); });
         }
 
         public void ResetHints()
         {
             if (CellValue > 0)
-                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: false)).ToList();
+                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: false, highlighted: false)).ToList();
             else
-                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: true)).ToList();
+                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: true, highlighted: false)).ToList();
         }
 
         public ReadOnlyCollection<HintInfo> Hints

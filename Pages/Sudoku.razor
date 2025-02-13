@@ -54,7 +54,8 @@
                 string hintId = item.Value.Hints[m].HintId;
                 int hintNo = item.Value.Hints[m].HintNo;
                 bool hintEnabled = item.Value.Hints[m].HintEnabled;
-                <button type="button" style="@SudokuUi.GetButtonStyle()" disabled="@(!hintEnabled)" id="@hintId" @onclick="(e => OnClickHintBtn(hintId))">@hintNo</button>
+                bool hintHighlighted = item.Value.Hints[m].Highlighted;
+                <button type="button" style="@SudokuUi.GetButtonStyle(hintHighlighted)" disabled="@(!hintEnabled)" id="@hintId" @onclick="(e => OnClickHintBtn(hintId))">@hintNo</button>
             }
         </div>
     }
@@ -80,6 +81,11 @@
         Save Game
     </button>
 </div>
+
+
+<br />
+<br />
+<button type="button" class="btn btn-warning" id="highlightLoneHintsBtn" @onclick="OnHighlightAllLoneHintsBtn">Highlight all lone hints</button>
 
 
 @code {

@@ -229,6 +229,22 @@ namespace BlazorWasmGames4Pwa.Pages
 
             await Task.FromResult(0);
         }
+        private async Task OnHighlightAllLoneHintsBtn()
+        {
+            _render = false;
+
+            _sudokuGame.ResetAllHighlights();
+
+            List<SudokuTip> tips = _sudokuGame.FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
+
+            _sudokuGame.HighlightAllHintsByTips(tips);
+
+            _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
+
+            _render = true;
+
+            await Task.FromResult(0);
+        }
     }
 
     internal class SudokuUi
@@ -317,6 +333,6 @@ namespace BlazorWasmGames4Pwa.Pages
             return retVal;
         }
 
-        public static string GetButtonStyle() => "height:20%; width:20%; padding: 0px;  "; // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;"; // font-size: 80%;
+        public static string GetButtonStyle(bool highlighted) => "height:20%; width:20%; padding: 0px;" + (highlighted ? "background-color: red;" : ""); // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;"; // font-size: 80%;
     }
 }
