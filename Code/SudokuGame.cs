@@ -54,6 +54,12 @@ namespace BlazorWasmGames4Pwa.Code
             UpdatePositionsByMoves();
 
             RenewHints(false);
+
+            //ResetAllHighlights();
+
+            List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
+
+            HighlightAllHintsByTips(tips);
         }
 
         public void NewMoveForHint(string hintBtnId)
@@ -65,6 +71,12 @@ namespace BlazorWasmGames4Pwa.Code
             UpdatePositionsByMoves();
 
             RenewHints(false);
+
+            //ResetAllHighlights();
+
+            List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
+
+            HighlightAllHintsByTips(tips);
         }
 
         public void UpdatePositionsByMoves()
@@ -107,6 +119,12 @@ namespace BlazorWasmGames4Pwa.Code
             UpdatePositionsByMoves();
 
             RenewHints(false);
+
+            //ResetAllHighlights();
+
+            List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
+
+            HighlightAllHintsByTips(tips);
 
             return true;
         }
@@ -559,6 +577,12 @@ namespace BlazorWasmGames4Pwa.Code
                     UpdatePositionsByMoves();
 
                     RenewHints(false);
+
+                    //ResetAllHighlights();
+
+                    List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
+
+                    HighlightAllHintsByTips(tips);
 
                     retVal = true;
                 }
