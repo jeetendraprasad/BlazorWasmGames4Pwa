@@ -17,4 +17,12 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\jeete\source\repos\OnWeb\BlazorWasmGames4Pwa\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\jeete\source\repos\OnWeb\BlazorWasmGames4Pwa\.editorconfig" />
+  </ItemGroup>
+
 </Project>
