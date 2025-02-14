@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "pwfXuB8l",
+  "version": "7cUilg52",
   "assets": [
     {
       "hash": "sha256-Nn3hFNI1tewUMI08Q8wfyBSkIHJ5g4VW3Ewd8aRj0js=",
@@ -142,7 +142,7 @@ self.assetsManifest = {
       "url": "_content/CurrieTechnologies.Razor.SweetAlert2/wordpressAdminTheme.min.js"
     },
     {
-      "hash": "sha256-FhY/ReQQQM+9Poc0WiTEiS3Wn9pFRHJSaIc25zP8qWo=",
+      "hash": "sha256-x3x4+HdkEkpMEMxCmrFhTu/G+UAntkt9whp6LbY1AG0=",
       "url": "_framework/BlazorWasmGames4Pwa.wasm"
     },
     {
@@ -314,7 +314,7 @@ self.assetsManifest = {
       "url": "_framework/System.wasm"
     },
     {
-      "hash": "sha256-7T0SdzCuBIpGL2IhF8YfOJQiA9R06a5UTLjY345L4xQ=",
+      "hash": "sha256-U3HZDh13SWQVjBORDFP31+rqJ6dlDhH835U9V65UzZ8=",
       "url": "_framework/blazor.boot.json"
     },
     {
