@@ -50,56 +50,14 @@ namespace BlazorWasmGames4Pwa.Code
         {
             _moves.Push(new Move() { ControlId = cellInputId, MoveType = MoveType.InputChanged, InputNewValue = value, HintButtonNewValue = null, });
 
-            ResetAllPositions();
-
-            UpdatePositionsByMoves();
-
-            RenewHints(false);
-
-            //ResetAllHighlights();
-
-            if(true)
-            {
-                bool someWereHighlighted = false;
-                if (!someWereHighlighted)
-                {
-                    List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
-                    HighlightAllHintsByTips(tips, SudokuTipType.SolvableByLoneHint, out someWereHighlighted);
-                }
-                if (!someWereHighlighted)
-                {
-                    List<SudokuTip> tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: false);
-                    HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
-                }
-            }
+            DoOperations();
         }
 
         public void NewMoveForHint(string hintBtnId)
         {
             _moves.Push(new Move() { ControlId = hintBtnId, MoveType = MoveType.HintButtonDisabled, InputNewValue = null, HintButtonNewValue = false, });
 
-            ResetAllPositions();
-
-            UpdatePositionsByMoves();
-
-            RenewHints(false);
-
-            //ResetAllHighlights();
-
-            if (true)
-            {
-                bool someWereHighlighted = false;
-                if (!someWereHighlighted)
-                {
-                    List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
-                    HighlightAllHintsByTips(tips, SudokuTipType.SolvableByLoneHint, out someWereHighlighted);
-                }
-                if (!someWereHighlighted)
-                {
-                    List<SudokuTip> tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: false);
-                    HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
-                }
-            }
+            DoOperations();
         }
 
         public void UpdatePositionsByMoves()
@@ -137,28 +95,7 @@ namespace BlazorWasmGames4Pwa.Code
 
             _moves.Pop();
 
-            ResetAllPositions();
-
-            UpdatePositionsByMoves();
-
-            RenewHints(false);
-
-            //ResetAllHighlights();
-
-            if (true)
-            {
-                bool someWereHighlighted = false;
-                if (!someWereHighlighted)
-                {
-                    List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
-                    HighlightAllHintsByTips(tips, SudokuTipType.SolvableByLoneHint, out someWereHighlighted);
-                }
-                if (!someWereHighlighted)
-                {
-                    List<SudokuTip> tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: false);
-                    HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
-                }
-            }
+            DoOperations();
 
             return true;
         }
@@ -608,28 +545,7 @@ namespace BlazorWasmGames4Pwa.Code
                 {
                     _moves = new Stack<Move>(data.Moves);
 
-                    ResetAllPositions();
-
-                    UpdatePositionsByMoves();
-
-                    RenewHints(false);
-
-                    //ResetAllHighlights();
-
-                    if (true)
-                    {
-                        bool someWereHighlighted = false;
-                        if (!someWereHighlighted)
-                        {
-                            List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
-                            HighlightAllHintsByTips(tips, SudokuTipType.SolvableByLoneHint, out someWereHighlighted);
-                        }
-                        if (!someWereHighlighted)
-                        {
-                            List<SudokuTip> tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: false);
-                            HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
-                        }
-                    }
+                    DoOperations();
 
                     retVal = true;
                 }
@@ -638,6 +554,32 @@ namespace BlazorWasmGames4Pwa.Code
                 retVal = false;
 
             return retVal;
+        }
+
+        internal void DoOperations()
+        {
+            ResetAllPositions();
+
+            UpdatePositionsByMoves();
+
+            RenewHints(false);
+
+            //ResetAllHighlights();
+
+            if (true)
+            {
+                bool someWereHighlighted = false;
+                if (!someWereHighlighted)
+                {
+                    List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
+                    HighlightAllHintsByTips(tips, SudokuTipType.SolvableByLoneHint, out someWereHighlighted);
+                }
+                if (!someWereHighlighted)
+                {
+                    List<SudokuTip> tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: false);
+                    HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
+                }
+            }
         }
 
         internal void HighlightAllHintsByTips(List<SudokuTip> tips, SudokuTipType tipType, out bool someWereHighlighted)
