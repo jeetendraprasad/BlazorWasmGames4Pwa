@@ -566,19 +566,21 @@ namespace BlazorWasmGames4Pwa.Code
 
             //ResetAllHighlights();
 
-            if (true)
+            GetAndHighlightAllHints();
+        }
+
+        internal void GetAndHighlightAllHints()
+        {
+            bool someWereHighlighted = false;
+            if (!someWereHighlighted)
             {
-                bool someWereHighlighted = false;
-                if (!someWereHighlighted)
-                {
-                    List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
-                    HighlightAllHintsByTips(tips, SudokuTipType.SolvableByLoneHint, out someWereHighlighted);
-                }
-                if (!someWereHighlighted)
-                {
-                    List<SudokuTip> tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: false);
-                    HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
-                }
+                List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
+                HighlightAllHintsByTips(tips, SudokuTipType.SolvableByLoneHint, out someWereHighlighted);
+            }
+            if (!someWereHighlighted)
+            {
+                List<SudokuTip> tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: false);
+                HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
             }
         }
 
