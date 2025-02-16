@@ -77,7 +77,6 @@ namespace BlazorWasmGames4Pwa.Code
                     string cellId = hintBtnId.Split($":{_hintIdPrefix}")[0];
                     int hintNumber = Convert.ToInt32(hintBtnId.Split($":{_hintIdPrefix}")[1], CultureInfo.InvariantCulture);
 
-                    // B[0,0]:C[0,0]:H1
                     _positions[cellId].DisableHint(hintNumber);
                 }
                 else
@@ -110,6 +109,41 @@ namespace BlazorWasmGames4Pwa.Code
         }
 
         public void ResetAllMoves() => _moves = [];
+
+        List<SudokuSuType> GetAllSuTypes(bool onlyBasicType = true /* Hori, Vert, Bloc */)
+        {
+            List<SudokuSuType> retVal
+                = new List<SudokuSuType>() { SudokuSuType.Hori, SudokuSuType.Vert, SudokuSuType.Bloc };
+
+            if (!onlyBasicType)
+                retVal.Add(SudokuSuType.Any);
+
+            return retVal;
+        }
+
+        List<List<string>> GetSuFullByType(SudokuSuType sudokuSuType)
+        {
+            List<List<string>> retVal = new List<List<string>>();
+
+            if(sudokuSuType == SudokuSuType.Hori)
+            {
+                retVal = GetSuHoriFull();
+            }
+            else if (sudokuSuType == SudokuSuType.Vert)
+            {
+                retVal = GetSuVertFull();
+            }
+            else if (sudokuSuType == SudokuSuType.Bloc)
+            {
+                retVal = GetSuBlocFull();
+            }
+            else
+            {
+                throw new NotImplementedException($"This sudoku type {sudokuSuType} is not implemented in this function");
+            }
+
+            return retVal;
+        }
 
         // Get Solving Unit - Horigontal list - Full
         List<List<string>> GetSuHoriFull()
@@ -187,7 +221,7 @@ namespace BlazorWasmGames4Pwa.Code
 
         // -----------
         // Get Solving Unit - for a block - Full
-        List<List<string>> GetSuBlockFull()
+        List<List<string>> GetSuBlocFull()
         {
             List<List<string>> retVal = [];
 
@@ -211,7 +245,6 @@ namespace BlazorWasmGames4Pwa.Code
                 for (int j = 0; j < _colsBlock.ValAsInt; j++)
                 {
                     string id = string.Format(_cellIdPrefix, blockId, j, i);
-                    //Console.WriteLine($"ID = {id}");
                     retVal.Add(id);
                 }
 
@@ -276,38 +309,12 @@ namespace BlazorWasmGames4Pwa.Code
         public void RenewHints(bool resetHints)
         {
             ResetHintsAndCellValueClashing(resetHints);
-            CheckHori();
-            CheckVert();
-            CheckBlock();
+            GetAllSuTypes(onlyBasicType: true).ForEach(su => CheckSu(su));
         }
 
-        private void CheckHori()
+        private void CheckSu(SudokuSuType sudokuSuType)
         {
-            Dictionary<string, SudokuCellInfo> _positions1 = GetSuHoriFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
-
-            for (int i = 0; i < Math.Sqrt(_positions1.Count); i++)
-            {
-                List<string> su = _positions1.Skip(i * (int)Math.Sqrt(_positions1.Count)).Take((int)Math.Sqrt(_positions1.Count)).Select(x => x.Key).ToList();
-
-                CheckInternal(su);
-            }
-        }
-
-        private void CheckVert()
-        {
-            Dictionary<string, SudokuCellInfo> _positions1 = GetSuVertFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
-
-            for (int i = 0; i < Math.Sqrt(_positions1.Count); i++)
-            {
-                List<string> su = _positions1.Skip(i * (int)Math.Sqrt(_positions1.Count)).Take((int)Math.Sqrt(_positions1.Count)).Select(x => x.Key).ToList();
-
-                CheckInternal(su);
-            }
-        }
-
-        private void CheckBlock()
-        {
-            Dictionary<string, SudokuCellInfo> _positions1 = GetSuBlockFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
+            Dictionary<string, SudokuCellInfo> _positions1 = GetSuFullByType(sudokuSuType).Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
 
             for (int i = 0; i < Math.Sqrt(_positions1.Count); i++)
             {
@@ -373,7 +380,7 @@ namespace BlazorWasmGames4Pwa.Code
             if(tips.Count > 0)
                 return [tips[0]];
 
-            tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: true);
+            tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), onlyFirst: true);
 
             if (tips.Count > 0)
                 return [tips[0]];
@@ -381,53 +388,77 @@ namespace BlazorWasmGames4Pwa.Code
             return [];
         }
 
-        internal List<SudokuTip> FindNextTip_HintDoublesFirstOrAll(bool onlyFirst = true)
+        internal List<SudokuTip> FindNextTip_BySu(List<SudokuSuType> sudokuSuTypes, bool onlyFirst = true)
         {
             List<SudokuTip> retVal = [];
 
-            Dictionary<string, SudokuCellInfo> _positions2_Hori = GetSuHoriFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
-            for (int i = 0; i < Math.Sqrt(_positions2_Hori.Count); i++)
+            foreach(SudokuSuType sudokuSuType in sudokuSuTypes)
             {
-                List<string> su = _positions2_Hori.Skip(i * (int)Math.Sqrt(_positions2_Hori.Count)).Take((int)Math.Sqrt(_positions2_Hori.Count)).Select(x => x.Key).ToList();
+                Dictionary<string, SudokuCellInfo> _positions3 = GetSuFullByType(sudokuSuType).Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
 
-                List<SudokuTip> retVal1 = FindNextTip_HintDoublesFirstOrAll(su, onlyFirst: onlyFirst);
+                for (int i = 0; i < Math.Sqrt(_positions3.Count); i++)
+                {
+                    List<string> su = _positions3.Skip(i * (int)Math.Sqrt(_positions3.Count)).Take((int)Math.Sqrt(_positions3.Count)).Select(x => x.Key).ToList();
 
-                retVal.AddRange(retVal1);
+                    List<SudokuTip> retVal1 = FindNextTip_HintDoublesFirstOrAll(su, onlyFirst: onlyFirst);
 
-                if (onlyFirst && retVal.Count > 0)
-                    return [retVal[0]];
-                    
-            }
+                    retVal.AddRange(retVal1);
 
-            Dictionary<string, SudokuCellInfo> _positions2_Vert = GetSuVertFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
-            for (int i = 0; i < Math.Sqrt(_positions2_Vert.Count); i++)
-            {
-                List<string> su = _positions2_Vert.Skip(i * (int)Math.Sqrt(_positions2_Vert.Count)).Take((int)Math.Sqrt(_positions2_Vert.Count)).Select(x => x.Key).ToList();
+                    if (onlyFirst && retVal.Count > 0)
+                        return [retVal[0]];
 
-                List<SudokuTip> retVal2 = FindNextTip_HintDoublesFirstOrAll(su, onlyFirst: onlyFirst);
-
-                retVal.AddRange(retVal2);
-
-                if (onlyFirst && retVal.Count > 0)
-                    return [retVal[0]];
-            }
-
-            Dictionary<string, SudokuCellInfo> _positions2_Bloc = GetSuBlockFull().Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
-            for (int i = 0; i < Math.Sqrt(_positions2_Bloc.Count); i++)
-            {
-                List<string> su = _positions2_Bloc.Skip(i * (int)Math.Sqrt(_positions2_Bloc.Count)).Take((int)Math.Sqrt(_positions2_Bloc.Count)).Select(x => x.Key).ToList();
-
-                List<SudokuTip> retVal3 = FindNextTip_HintDoublesFirstOrAll(su, onlyFirst: onlyFirst);
-
-                retVal.AddRange(retVal3);
-
-                if (onlyFirst && retVal.Count > 0)
-                    return [retVal[0]];
+                }
             }
 
             return retVal;
         }
 
+        // fn to get all triplets1 (1,2,4 + 1,2 + 1,2,4) OR (1,2 + 2,3 + 1,2,3)
+        internal List<SudokuTip> FindNextTip_HintTriplets1FirstOrAll(List<string> su, bool onlyFirst = true)
+        {
+            List<SudokuTip> retVal = [];
+
+            var data = Enumerable.Range(1, 7);
+            var r = from a in data
+                    from b in data
+                    from c in data
+                    where a < b && b < c
+                    select new { a, b, c };
+
+            IEnumerable<List<string>> triplets
+                =
+                from one in su
+                from two in su
+                from thr in su
+                where string.Compare(one, two, false) > 0 && string.Compare(two, thr, false) > 0
+                select new List<string>() { one, two, thr }
+                .ToList();
+
+            foreach(List<string> triple in triplets)
+            {
+                IEnumerable<HintInfo> combined = _positions[triple[0]].Hints.Union(_positions[triple[1]].Hints).Union(_positions[triple[2]].Hints);
+
+                if(combined.Count() != 3)
+                {
+                    // They are not part of triplets1
+                    continue;
+                }
+
+                SudokuTip tip = new()
+                {
+                    Su = su,
+                    SudokuTipCell = triple,
+                    SudokuTipType = SudokuTipType.Triplet1,
+                };
+
+                retVal.Add(tip);
+
+                if (onlyFirst)
+                    break;
+            }
+
+            return retVal;
+        }
 
         internal List<SudokuTip> FindNextTip_HintDoublesFirstOrAll(List<string> su, bool onlyFirst = true)
         {
@@ -579,9 +610,14 @@ namespace BlazorWasmGames4Pwa.Code
             }
             if (!someWereHighlighted)
             {
-                List<SudokuTip> tips = FindNextTip_HintDoublesFirstOrAll(onlyFirst: false);
+                List<SudokuTip> tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), onlyFirst: false);
                 HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
             }
+            if(!someWereHighlighted)
+            {
+                //List<SudokuTip> tips = FindNextTip_HintTriplets1FirstOrAll(onlyFirst: false);
+            }
+
         }
 
         internal void HighlightAllHintsByTips(List<SudokuTip> tips, SudokuTipType tipType, out bool someWereHighlighted)
@@ -646,23 +682,20 @@ namespace BlazorWasmGames4Pwa.Code
         public List<string> Su { get; set; } = [];
     }
 
-    //internal enum SodukuSolvingUnitIdentifier
-    //{
-    //    Any,
-    //    Hori,
-    //    Vert,
-    //    Bloc,
-
-    //}
+    internal enum SudokuSuType
+    {
+        Any,
+        Hori,
+        Vert,
+        Bloc,
+    }
 
     internal enum SudokuTipType
     {
         SolvableByLoneHint,                // solvable because there is only single hint
         HintDoubles,                       // Doubles pair. E.g. 2,3 and 2,3 in two cells
-
+        Triplet1,                          // Triplets type 1 (1,2,4 + 1,2 + 1,2,4) OR (1,2 + 2,3 + 1,2,3)
     }
-
-
 
     internal class Integer1 : ICloneable
     {
