@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "7cUilg52",
+  "version": "aHlURNr3",
   "assets": [
     {
       "hash": "sha256-Nn3hFNI1tewUMI08Q8wfyBSkIHJ5g4VW3Ewd8aRj0js=",
@@ -142,7 +142,7 @@ self.assetsManifest = {
       "url": "_content/CurrieTechnologies.Razor.SweetAlert2/wordpressAdminTheme.min.js"
     },
     {
-      "hash": "sha256-x3x4+HdkEkpMEMxCmrFhTu/G+UAntkt9whp6LbY1AG0=",
+      "hash": "sha256-CuYz31rTF4+HFJSaA67TVSR07NCVKFldPp5p5l4giZA=",
       "url": "_framework/BlazorWasmGames4Pwa.wasm"
     },
     {
@@ -214,7 +214,7 @@ self.assetsManifest = {
       "url": "_framework/System.Collections.NonGeneric.wasm"
     },
     {
-      "hash": "sha256-gMrBwatIMEWhwRgTtdve/Q7LYEq+7o6mD0GpxMR6C9c=",
+      "hash": "sha256-4q96JdY/BdFgAXDZND//9OH+bV9kAx7NBS1XHnhPcug=",
       "url": "_framework/System.Collections.wasm"
     },
     {
@@ -242,7 +242,7 @@ self.assetsManifest = {
       "url": "_framework/System.Diagnostics.DiagnosticSource.wasm"
     },
     {
-      "hash": "sha256-tzsWLcYAxIsvP6NQPO1TJkK7P/oz+9QHn21GGt+8B10=",
+      "hash": "sha256-SdbS1F+D/Ncgo6n8DLhc9fMPHoLxDP1u+qSd6i8Cp5M=",
       "url": "_framework/System.Linq.wasm"
     },
     {
@@ -266,7 +266,7 @@ self.assetsManifest = {
       "url": "_framework/System.ObjectModel.wasm"
     },
     {
-      "hash": "sha256-iy8buVP89L/fK0tTPiYY/iAbWIaxdgxoK34yRbkIuEo=",
+      "hash": "sha256-+J33+xYE4PyJGcW6fDe5dXAskDGaduvvLma7uZiCfwI=",
       "url": "_framework/System.Private.CoreLib.wasm"
     },
     {
@@ -290,7 +290,7 @@ self.assetsManifest = {
       "url": "_framework/System.Runtime.Numerics.wasm"
     },
     {
-      "hash": "sha256-9pq6esDQbDPchW9l4gLDjF9Q2iEbvdaw3sR1DsU9XOg=",
+      "hash": "sha256-E30Sk+y9yRViKEhbi00jAz8wFDCMOo9H46+lHkUw9fc=",
       "url": "_framework/System.Runtime.wasm"
     },
     {
@@ -314,7 +314,7 @@ self.assetsManifest = {
       "url": "_framework/System.wasm"
     },
     {
-      "hash": "sha256-U3HZDh13SWQVjBORDFP31+rqJ6dlDhH835U9V65UzZ8=",
+      "hash": "sha256-14p4+NCurwb9YKvB9tZYDlqD7r8KhsxcbQkWpTGF6sY=",
       "url": "_framework/blazor.boot.json"
     },
     {
