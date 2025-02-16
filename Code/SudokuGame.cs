@@ -365,28 +365,6 @@ namespace BlazorWasmGames4Pwa.Code
                 }
         }
 
-        public void ResetAllHighlights()
-        {
-            foreach (KeyValuePair<string, SudokuCellInfo> item in _positions)
-            {
-                item.Value.ResetAllHighlights();
-            }
-        }
-
-        internal List<SudokuTip> FindNextTip()
-        {
-            List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: true);
-
-            if (tips.Count > 0)
-                return [tips[0]];
-
-            tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), FindNextTip_HintDoublesFirstOrAll, onlyFirst: true);
-
-            if (tips.Count > 0)
-                return [tips[0]];
-
-            return [];
-        }
 
         internal delegate List<SudokuTip> Func_FindNextTip(List<string> su, bool onlyFirst = true);
 
@@ -499,7 +477,7 @@ namespace BlazorWasmGames4Pwa.Code
                             {
                                 SudokuTip tip = new()
                                 {
-                                    SudokuTipType = SudokuTipType.HintDoubles,
+                                    SudokuTipType = SudokuTipType.NakedPair,
                                     SudokuTipCell = [our, other],
                                     Su = su,
                                 };
@@ -628,7 +606,7 @@ namespace BlazorWasmGames4Pwa.Code
             {
                 List<SudokuTip> tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), FindNextTip_HintDoublesFirstOrAll,
                     onlyFirst: false);
-                HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
+                HighlightAllHintsByTips(tips, SudokuTipType.NakedPair, out someWereHighlighted);
             }
             if (!someWereHighlighted)
             {
@@ -657,7 +635,7 @@ namespace BlazorWasmGames4Pwa.Code
                     }
                 }
             }
-            else if (tipType == SudokuTipType.HintDoubles)
+            else if (tipType == SudokuTipType.NakedPair)
             {
                 foreach (SudokuTip tip in tips)
                 {
@@ -761,7 +739,8 @@ namespace BlazorWasmGames4Pwa.Code
     internal enum SudokuTipType
     {
         SolvableByLoneHint,                // solvable because there is only single hint
-        HintDoubles,                       // Doubles pair. E.g. 2,3 and 2,3 in two cells
+        NakedPair,                       // Doubles pair. E.g. 2,3 and 2,3 in two cells,
+        HiddenPair,
         Triplet1,                          // Triplets type 1 (1,2,4 + 1,2 + 1,2,4) OR (1,2 + 2,3 + 1,2,3)
     }
 
@@ -839,10 +818,7 @@ namespace BlazorWasmGames4Pwa.Code
 
         public bool CellValueClashing { get; set; } = false;
 
-        public void ResetAllHighlights()
-        {
-            _hints.ForEach(item => item.DisableHighlight());
-        }
+        //public void ResetAllHighlights() => _hints.ForEach(item => item.DisableHighlight());
 
         public void HighlightTheseEnabledHints(List<int> nums, out bool someWereHighlighted)
         {
@@ -934,5 +910,4 @@ namespace BlazorWasmGames4Pwa.Code
         InputChanged,
         HintButtonDisabled,
     }
-
 }

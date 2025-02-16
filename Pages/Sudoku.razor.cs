@@ -153,21 +153,6 @@ namespace BlazorWasmGames4Pwa.Pages
             _render = true;
         }
 
-        private async Task OnNextTipBtn()
-        {
-            List<SudokuTip> tip = _sudokuGame.FindNextTip();
-
-            string json = JsonSerializer.Serialize(tip ?? new object());
-
-            SweetAlertResult result = await swal.FireAsync(new SweetAlertOptions
-            {
-                Icon = "success",
-                Title = "Tip",
-                Text = json,
-            });
-
-            await Task.FromResult(0);
-        }
         private async Task SudokuFileUpload(InputFileChangeEventArgs e)
         {
             _render = false;
@@ -226,22 +211,6 @@ namespace BlazorWasmGames4Pwa.Pages
             using DotNetStreamReference streamRef = new DotNetStreamReference(stream: fileStream);
 
             await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
-
-            await Task.FromResult(0);
-        }
-        private async Task OnHighlightAllLoneHintsBtn()
-        {
-            _render = false;
-
-            _sudokuGame.ResetAllHighlights();
-
-            List<SudokuTip> tips = _sudokuGame.FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: false);
-
-            _sudokuGame.HighlightAllHintsByTips(tips, SudokuTipType.SolvableByLoneHint, out bool _);
-
-            _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
-
-            _render = true;
 
             await Task.FromResult(0);
         }
