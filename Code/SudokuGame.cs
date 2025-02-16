@@ -125,7 +125,7 @@ namespace BlazorWasmGames4Pwa.Code
         {
             List<List<string>> retVal = new List<List<string>>();
 
-            if(sudokuSuType == SudokuSuType.Hori)
+            if (sudokuSuType == SudokuSuType.Hori)
             {
                 retVal = GetSuHoriFull();
             }
@@ -377,10 +377,10 @@ namespace BlazorWasmGames4Pwa.Code
         {
             List<SudokuTip> tips = FindNextTip_SolvableByLoneHintFirstOrAll(onlyFirst: true);
 
-            if(tips.Count > 0)
+            if (tips.Count > 0)
                 return [tips[0]];
 
-            tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), onlyFirst: true);
+            tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), FindNextTip_HintDoublesFirstOrAll, onlyFirst: true);
 
             if (tips.Count > 0)
                 return [tips[0]];
@@ -388,11 +388,13 @@ namespace BlazorWasmGames4Pwa.Code
             return [];
         }
 
-        internal List<SudokuTip> FindNextTip_BySu(List<SudokuSuType> sudokuSuTypes, bool onlyFirst = true)
+        internal delegate List<SudokuTip> Func_FindNextTip(List<string> su, bool onlyFirst = true);
+
+        internal List<SudokuTip> FindNextTip_BySu(List<SudokuSuType> sudokuSuTypes, Func_FindNextTip dele, bool onlyFirst = true)
         {
             List<SudokuTip> retVal = [];
 
-            foreach(SudokuSuType sudokuSuType in sudokuSuTypes)
+            foreach (SudokuSuType sudokuSuType in sudokuSuTypes)
             {
                 Dictionary<string, SudokuCellInfo> _positions3 = GetSuFullByType(sudokuSuType).Flatten().Select(x => new KeyValuePair<string, SudokuCellInfo>(x, _positions[x])).ToDictionary(t => t.Key, t => t.Value);
 
@@ -400,7 +402,7 @@ namespace BlazorWasmGames4Pwa.Code
                 {
                     List<string> su = _positions3.Skip(i * (int)Math.Sqrt(_positions3.Count)).Take((int)Math.Sqrt(_positions3.Count)).Select(x => x.Key).ToList();
 
-                    List<SudokuTip> retVal1 = FindNextTip_HintDoublesFirstOrAll(su, onlyFirst: onlyFirst);
+                    List<SudokuTip> retVal1 = dele(su, onlyFirst: onlyFirst);
 
                     retVal.AddRange(retVal1);
 
@@ -418,27 +420,41 @@ namespace BlazorWasmGames4Pwa.Code
         {
             List<SudokuTip> retVal = [];
 
-            var data = Enumerable.Range(1, 7);
-            var r = from a in data
-                    from b in data
-                    from c in data
-                    where a < b && b < c
-                    select new { a, b, c };
-
-            IEnumerable<List<string>> triplets
+            List<List<string>> triplets
                 =
-                from one in su
-                from two in su
-                from thr in su
-                where string.Compare(one, two, false) > 0 && string.Compare(two, thr, false) > 0
-                select new List<string>() { one, two, thr }
+                (from one in su
+                 from two in su
+                 from thr in su
+                 where string.Compare(one, two, false) > 0 && string.Compare(two, thr, false) > 0
+                 select new List<string>() { one, two, thr })
                 .ToList();
 
-            foreach(List<string> triple in triplets)
+            foreach (List<string> triple in triplets)
             {
-                IEnumerable<HintInfo> combined = _positions[triple[0]].Hints.Union(_positions[triple[1]].Hints).Union(_positions[triple[2]].Hints);
+                List<int> oneList = _positions[triple[0]].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
+                List<int> twoList = _positions[triple[1]].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
+                List<int> thrList = _positions[triple[2]].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
 
-                if(combined.Count() != 3)
+                if (
+                    (oneList.Count < 2 || oneList.Count > 3)
+                    ||
+                    (twoList.Count < 2 || twoList.Count > 3)
+                    ||
+                    (thrList.Count < 2 || thrList.Count > 3)
+                    )
+                    continue;
+
+                List<int> combined = (
+                        oneList
+                    .Union(
+                        twoList
+                        )
+                    .Union(
+                        thrList
+                        )
+                    ).ToList();
+
+                if (combined.Count() != 3)
                 {
                     // They are not part of triplets1
                     continue;
@@ -552,7 +568,7 @@ namespace BlazorWasmGames4Pwa.Code
             //{
             //    UnmappedMemberHandling = System.Text.Json.Serialization.JsonUnmappedMemberHandling.Skip,
             //};
-            SudokuSaveData ? data = JsonSerializer.Deserialize<SudokuSaveData>(json);
+            SudokuSaveData? data = JsonSerializer.Deserialize<SudokuSaveData>(json);
 
             int oldRows = _rowsBlock.ValAsInt;
             int oldCols = _colsBlock.ValAsInt;
@@ -610,12 +626,16 @@ namespace BlazorWasmGames4Pwa.Code
             }
             if (!someWereHighlighted)
             {
-                List<SudokuTip> tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), onlyFirst: false);
+                List<SudokuTip> tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), FindNextTip_HintDoublesFirstOrAll,
+                    onlyFirst: false);
                 HighlightAllHintsByTips(tips, SudokuTipType.HintDoubles, out someWereHighlighted);
             }
-            if(!someWereHighlighted)
+            if (!someWereHighlighted)
             {
                 //List<SudokuTip> tips = FindNextTip_HintTriplets1FirstOrAll(onlyFirst: false);
+                List<SudokuTip> tips = FindNextTip_BySu(GetAllSuTypes(onlyBasicType: true), FindNextTip_HintTriplets1FirstOrAll,
+                    onlyFirst: false);
+                HighlightAllHintsByTips(tips, SudokuTipType.Triplet1, out someWereHighlighted);
             }
 
         }
@@ -624,7 +644,7 @@ namespace BlazorWasmGames4Pwa.Code
         {
             someWereHighlighted = false;
 
-            if(tipType == SudokuTipType.SolvableByLoneHint)
+            if (tipType == SudokuTipType.SolvableByLoneHint)
             {
                 foreach (SudokuTip tip in tips)
                 {
@@ -643,18 +663,18 @@ namespace BlazorWasmGames4Pwa.Code
                 {
                     if (tip.SudokuTipType == tipType)
                     {
-                        List<int> doubleHints = _positions[ tip.SudokuTipCell[0] ].Hints.Where( x => x.HintEnabled ).Select( x => x.HintNo).ToList();
+                        List<int> doubleHints = _positions[tip.SudokuTipCell[0]].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
 
                         foreach (var cell in tip.Su)
                         {
-                            Console.WriteLine("Cell = " + cell);
+                            //Console.WriteLine("Cell = " + cell);
 
                             if (tip.SudokuTipCell[0] == cell || tip.SudokuTipCell[1] == cell)
                                 continue; // we skip own cell of tips
 
                             SudokuCellInfo cellInfo = _positions[cell];
                             cellInfo.HighlightTheseEnabledHints(doubleHints, out bool highlighted);
-                            if(highlighted)
+                            if (highlighted)
                             {
                                 someWereHighlighted = true;
                                 //break;
@@ -663,6 +683,54 @@ namespace BlazorWasmGames4Pwa.Code
                     }
                 }
             }
+            else if (tipType == SudokuTipType.Triplet1)
+            {
+                foreach (SudokuTip tip in tips)
+                {
+                    if (tip.SudokuTipType == tipType)
+                    {
+                        List<int> oneList = _positions[tip.SudokuTipCell[0]].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
+                        List<int> twoList = _positions[tip.SudokuTipCell[1]].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
+                        List<int> thrList = _positions[tip.SudokuTipCell[2]].Hints.Where(x => x.HintEnabled).Select(x => x.HintNo).ToList();
+
+                        //if (
+                        //    (oneList.Count < 2 || oneList.Count > 3)
+                        //    ||
+                        //    (twoList.Count < 2 || twoList.Count > 3)
+                        //    ||
+                        //    (thrList.Count < 2 || thrList.Count > 3)
+                        //    )
+                        //    continue;
+
+                        List<int> combined = (
+                                oneList
+                            .Union(
+                                twoList
+                                )
+                            .Union(
+                                thrList
+                                )
+                            ).ToList();
+
+                        foreach (var cell in tip.Su)
+                        {
+                            Console.WriteLine("Cell = " + cell);
+
+                            if (tip.SudokuTipCell[0] == cell || tip.SudokuTipCell[1] == cell || tip.SudokuTipCell[2] == cell)
+                                continue; // we skip own cell of tips
+
+                            SudokuCellInfo cellInfo = _positions[cell];
+                            cellInfo.HighlightTheseEnabledHints(combined, out bool highlighted);
+                            if (highlighted)
+                            {
+                                someWereHighlighted = true;
+                                //break;
+                            }
+                        }
+                    }
+                }
+            }
+
 
         }
     }
@@ -784,7 +852,7 @@ namespace BlazorWasmGames4Pwa.Code
 
             hints.ForEach(x => x.EnableHighlight());
 
-            if(hints.Count > 0)
+            if (hints.Count > 0)
                 someWereHighlighted = true;
         }
 
