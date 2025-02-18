@@ -302,6 +302,16 @@ namespace BlazorWasmGames4Pwa.Pages
             return retVal;
         }
 
-        public static string GetButtonStyle(bool highlighted) => "height:20%; width:20%; padding: 0px;" + (highlighted ? "background-color: red;" : ""); // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;"; // font-size: 80%;
+        public static string GetButtonStyle(bool highlighted, bool highlightedIsSolution)
+        {
+            string highlightedColor = "red";
+
+            if (highlightedIsSolution)
+                highlightedColor = "green";
+
+            string style = "height:20%; width:20%; padding: 0px;" + (highlighted ? $"background-color: {highlightedColor};" : "");
+
+            return style;
+        } // $"width: {sodukuSizeInPx}px;height: {sodukuSizeInPx}px;"; // font-size: 80%;
     }
 }

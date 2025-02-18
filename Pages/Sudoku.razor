@@ -55,7 +55,8 @@
                 int hintNo = item.Value.Hints[m].HintNo;
                 bool hintEnabled = item.Value.Hints[m].HintEnabled;
                 bool hintHighlighted = item.Value.Hints[m].Highlighted;
-                <button type="button" style="@SudokuUi.GetButtonStyle(hintHighlighted)" tabindex="-1" disabled="@(!hintEnabled)" id="@hintId" @onclick="(e => OnClickHintBtn(hintId))">@hintNo</button>
+                bool hintHighlightedIsSolution = item.Value.Hints[m].HighlightedIsSolution;
+                <button type="button" style="@SudokuUi.GetButtonStyle(hintHighlighted, hintHighlightedIsSolution)" tabindex="-1" disabled="@(!hintEnabled)" id="@hintId" @onclick="(e => OnClickHintBtn(hintId))">@hintNo</button>
             }
         </div>
     }

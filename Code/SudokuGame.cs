@@ -111,7 +111,7 @@ namespace BlazorWasmGames4Pwa.Code
 
         public void ResetAllMoves() => _moves = [];
 
-        List<SudokuSuType> GetAllSuTypes(bool onlyBasicType = true /* Hori, Vert, Bloc */)
+        static List<SudokuSuType> GetAllSuTypes(bool onlyBasicType = true /* Hori, Vert, Bloc */)
         {
             List<SudokuSuType> retVal
                 = new List<SudokuSuType>() { SudokuSuType.Hori, SudokuSuType.Vert, SudokuSuType.Bloc };
@@ -699,7 +699,7 @@ namespace BlazorWasmGames4Pwa.Code
                                 continue; // we skip own cell of tips
 
                             SudokuCellInfo cellInfo = _positions[cell];
-                            cellInfo.HighlightTheseEnabledHints(doubleHints, out bool highlighted);
+                            cellInfo.HighlightTheseEnabledHints(doubleHints, false, out bool highlighted);
                             if (highlighted)
                             {
                                 someWereHighlighted = true;
@@ -732,7 +732,7 @@ namespace BlazorWasmGames4Pwa.Code
                         if (ourHints.Count == 1)
                         {
                             SudokuCellInfo cellInfo = _positions[tip.SudokuTipCell[0]];
-                            cellInfo.HighlightTheseEnabledHints(ourHints, out bool highlighted);
+                            cellInfo.HighlightTheseEnabledHints(ourHints, true, out bool highlighted);
                             if (highlighted)
                             {
                                 someWereHighlighted = true;
@@ -779,7 +779,7 @@ namespace BlazorWasmGames4Pwa.Code
                                 continue; // we skip own cell of tips
 
                             SudokuCellInfo cellInfo = _positions[cell];
-                            cellInfo.HighlightTheseEnabledHints(combined, out bool highlighted);
+                            cellInfo.HighlightTheseEnabledHints(combined, false, out bool highlighted);
                             if (highlighted)
                             {
                                 someWereHighlighted = true;
@@ -868,23 +868,27 @@ namespace BlazorWasmGames4Pwa.Code
         }
     }
 
-    internal class HintInfo(string hintId, int hintNo, bool hintEnabled, bool highlighted) : ICloneable
+    internal class HintInfo(string hintId, int hintNo, bool hintEnabled, bool highlighted, bool highlightedIsSolution) : ICloneable
     {
         public string HintId { get; private set; } = hintId;
         public int HintNo { get; private set; } = hintNo;
         public bool HintEnabled { get; private set; } = hintEnabled;
         public bool Highlighted { get; private set; } = highlighted;
+        public bool HighlightedIsSolution { get; private set; } = highlightedIsSolution;
+
 
         public object Clone()
         {
-            HintInfo cloned = new(this.HintId, this.HintNo, this.HintEnabled, this.Highlighted);
+            HintInfo cloned = new(this.HintId, this.HintNo, this.HintEnabled, this.Highlighted, this.HighlightedIsSolution);
 
             return cloned;
         }
 
         public void DisableHint() => HintEnabled = false;
 
-        public void DisableHighlight() => Highlighted = false;
+        public void SetHighlightedIsSolution() => HighlightedIsSolution = true;
+
+        //public void DisableHighlight() => Highlighted = false;
         public void EnableHighlight() => Highlighted = true;
     }
 
@@ -900,13 +904,20 @@ namespace BlazorWasmGames4Pwa.Code
 
         //public void ResetAllHighlights() => _hints.ForEach(item => item.DisableHighlight());
 
-        public void HighlightTheseEnabledHints(List<int> nums, out bool someWereHighlighted)
+        public void HighlightTheseEnabledHints(List<int> nums, bool highlightedIsSolution, out bool someWereHighlighted)
         {
             someWereHighlighted = false;
 
             List<HintInfo> hints = _hints.Where(x => x.HintEnabled && nums.Contains(x.HintNo)).Select(y => y).ToList(); // enabled hints only and that are part of numbers
 
-            hints.ForEach(x => x.EnableHighlight());
+            hints.ForEach(
+                (x) =>
+                {
+                    x.EnableHighlight();
+                    if (highlightedIsSolution)
+                        x.SetHighlightedIsSolution();
+                }
+                );
 
             if (hints.Count > 0)
                 someWereHighlighted = true;
@@ -918,7 +929,7 @@ namespace BlazorWasmGames4Pwa.Code
 
             Debug.Assert(hints.Count == 1); // we should have only single hint enabled
 
-            hints.ForEach(x => x.EnableHighlight());
+            hints.ForEach((x) => { x.EnableHighlight(); x.SetHighlightedIsSolution(); });
         }
 
         public SudokuCellInfo(string cellId,
@@ -934,7 +945,7 @@ namespace BlazorWasmGames4Pwa.Code
 
             _hintIdPrefix = hintIdPrefix;
 
-            _hints = Enumerable.Range(1, maxCellValue).Select(x => new HintInfo(hintId: _cellId + $":{hintIdPrefix}{x}", hintNo: x, hintEnabled: true, highlighted: false)).ToList();
+            _hints = Enumerable.Range(1, maxCellValue).Select(x => new HintInfo(hintId: _cellId + $":{hintIdPrefix}{x}", hintNo: x, hintEnabled: true, highlighted: false, highlightedIsSolution: false)).ToList();
         }
 
         public void DisableHint(int hintToDisable)
@@ -945,9 +956,9 @@ namespace BlazorWasmGames4Pwa.Code
         public void ResetHints()
         {
             if (CellValue > 0)
-                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: false, highlighted: false)).ToList();
+                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: false, highlighted: false, highlightedIsSolution: false)).ToList();
             else
-                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: true, highlighted: false)).ToList();
+                _hints = Enumerable.Range(1, _cellValueField1.GetMaxValue()).Select(x => new HintInfo(hintId: _cellId + $":{_hintIdPrefix}{x}", hintNo: x, hintEnabled: true, highlighted: false, highlightedIsSolution: false)).ToList();
         }
 
         public ReadOnlyCollection<HintInfo> Hints
