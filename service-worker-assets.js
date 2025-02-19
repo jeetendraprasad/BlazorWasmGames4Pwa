@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "mplhXgY8",
+  "version": "/SdsYeXO",
   "assets": [
     {
       "hash": "sha256-Nn3hFNI1tewUMI08Q8wfyBSkIHJ5g4VW3Ewd8aRj0js=",
@@ -142,7 +142,7 @@ self.assetsManifest = {
       "url": "_content/CurrieTechnologies.Razor.SweetAlert2/wordpressAdminTheme.min.js"
     },
     {
-      "hash": "sha256-08AddW2mVOzR25hbPXWlZSh3EoPKTYca73E67lY0y+I=",
+      "hash": "sha256-I9iX/X26a0x5OQSCREQyhm3wF/Rw5yrAPNK1HaULqsk=",
       "url": "_framework/BlazorWasmGames4Pwa.wasm"
     },
     {
@@ -242,7 +242,7 @@ self.assetsManifest = {
       "url": "_framework/System.Diagnostics.DiagnosticSource.wasm"
     },
     {
-      "hash": "sha256-or447cEQLMKUJARe/vLiCyyeDRbD6OcO4izGSxPtuEM=",
+      "hash": "sha256-XzB5ffibnVboLYbHX2YP7Lb7si8sDqxUUFaIl2YPPto=",
       "url": "_framework/System.Linq.wasm"
     },
     {
@@ -314,7 +314,7 @@ self.assetsManifest = {
       "url": "_framework/System.wasm"
     },
     {
-      "hash": "sha256-aywjDdJGmRG1qRGKkSYq1zV37MggKbBzHavlH0RjVEg=",
+      "hash": "sha256-L7ap6xZDbfZoHChlo2YqFNkLO3cwlQOCbb5T2nprFhs=",
       "url": "_framework/blazor.boot.json"
     },
     {
