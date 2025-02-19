@@ -48,6 +48,16 @@ namespace BlazorWasmGames4Pwa.Pages
 
             _sudokuUi.SetPositions(_sudokuGame.GetPositionsCloned());
 
+            if (_sudokuGame.NoMoreMoves())
+            {
+                SweetAlertResult result = await swal.FireAsync(new SweetAlertOptions
+                {
+                    Icon = "info",
+                    Title = "Oops...",
+                    Text = "No more moves. Is this solved?"
+                });
+            }
+
             _render = true;
 
             await Task.FromResult(0);
@@ -297,7 +307,7 @@ namespace BlazorWasmGames4Pwa.Pages
 
         public static string GetInputStyle(bool cellValueClashing)
         {
-            string retVal = "overflow : hidden; height:20%; width : 100%; " + (!cellValueClashing ? "" : "text-decoration: line-through; padding: 0px;"); //  font-size: 80%;
+            string retVal = "overflow : hidden; height:20%; width : 100%; " + (!cellValueClashing ? "" : "text-decoration: line-through; padding: 0px; text-decoration-color: red; color: red;"); //  font-size: 80%;
 
             return retVal;
         }

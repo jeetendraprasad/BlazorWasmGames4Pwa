@@ -636,6 +636,8 @@ namespace BlazorWasmGames4Pwa.Code
             GetAndHighlightAllHints();
         }
 
+        public bool NoMoreMoves() => !_positions.Any(x => x.Value.CellValue == 0);
+
         internal void GetAndHighlightAllHints()
         {
             bool someWereHighlighted = false;
